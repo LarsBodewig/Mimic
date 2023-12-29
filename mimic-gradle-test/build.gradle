@@ -1,0 +1,32 @@
+buildscript {
+	group = 'dev.bodewig.mimic'
+	version = '1.0.0-SNAPSHOT'
+}
+
+plugins {
+	id 'eclipse'
+	id 'java-library'
+	//id 'dev.bodewig.mimic.gradle.plugin' version "$version"
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	gradlePluginPortal()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_19
+}
+
+/*mimic {
+	packageName = 'dev.bodewig.mimic.gradle.test.generated'
+	classes = ['dev.bodewig.mimic.gradle.test.MyTestClass']
+	outputDirectory = ./src/generated
+}*/
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+eclipse.project.name = "mimic-gradle-test"
