@@ -1,14 +1,10 @@
 package dev.bodewig.mimic.gradle.plugin;
 
-import java.io.File;
+public class MimicPluginExtension {
 
-import org.gradle.api.provider.Property;
+	public String packageName;
 
-public interface MimicPluginExtension {
+	public String[] classes;
 
-	Property<String> getPackageName();
-
-	Property<String[]> getClasses();
-
-	Property<File> getOutputDirectory();
+	public String outputDirectory;
 }

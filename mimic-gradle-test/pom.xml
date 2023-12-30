@@ -52,20 +52,8 @@
 						<configuration>
 							<executable>../gradlew</executable>
 							<arguments>
+								<argument>mimic</argument>
 								<argument>build</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>install</id>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<phase>install</phase>
-						<configuration>
-							<executable>../gradlew</executable>
-							<arguments>
-								<argument>publish</argument>
 							</arguments>
 						</configuration>
 					</execution>

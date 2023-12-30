@@ -1,8 +1,14 @@
 pluginManagement {
+	rootProject.name = 'mimic-gradle-test'
+	gradle.ext.groupId = 'dev.bodewig.mimic'
+	gradle.ext.version = '1.0.0-SNAPSHOT'
+
 	repositories {
 		mavenLocal()
 		mavenCentral()
 		gradlePluginPortal()
 	}
-    includeBuild '../mimic-gradle-plugin'
+    plugins {
+        id 'dev.bodewig.mimic.gradle.plugin' version "$gradle.version"
+    }
 }

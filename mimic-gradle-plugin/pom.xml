@@ -64,7 +64,7 @@
 						<configuration>
 							<executable>../gradlew</executable>
 							<arguments>
-								<argument>publish</argument>
+								<argument>publishToMavenLocal</argument>
 							</arguments>
 						</configuration>
 					</execution>

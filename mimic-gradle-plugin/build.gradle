@@ -1,6 +1,6 @@
 buildscript {
-	group = 'dev.bodewig.mimic'
-	version = '1.0.0-SNAPSHOT'
+	group = "$gradle.group"
+	version = "$gradle.version"
 }
 
 plugins {

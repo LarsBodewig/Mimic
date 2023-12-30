@@ -1,1 +1,3 @@
 rootProject.name = 'mimic-gradle-plugin'
+gradle.ext.group = 'dev.bodewig.mimic'
+gradle.ext.version = '1.0.0-SNAPSHOT'
