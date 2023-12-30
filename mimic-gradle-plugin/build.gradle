@@ -22,7 +22,11 @@ gradlePlugin {
     plugins {
         mimic {
             id = 'dev.bodewig.mimic.gradle.plugin'
+            displayName = 'mimic-gradle-plugin'
+            description = 'Create reflective accessors for third party classes'
             implementationClass = 'dev.bodewig.mimic.gradle.plugin.MimicPlugin'
+            website = 'https://github.com/LarsBodewig/Mimic'
+            vcsUrl = 'https://github.com/LarsBodewig/Mimic.git'
         }
     }
 }

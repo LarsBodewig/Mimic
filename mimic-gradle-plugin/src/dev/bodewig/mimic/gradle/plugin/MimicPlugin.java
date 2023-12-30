@@ -15,9 +15,27 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 
-import dev.bodewig.mimic.core.Mimic;
+import dev.bodewig.mimic.core.MimicCreator;
 
+/**
+ * A mimic is a generated wrapper with type-safe accessors using Java reflection
+ * to get and set non-public fields.
+ * <p>
+ * This plugin creates mimics for a configured list of classes on the compile
+ * classpath, in a configured package, in a configured output directory (see
+ * {@link MimicPluginExtension}).
+ * <p>
+ * The generated classes are written in Java and need to be compiled with the
+ * Java plugin for gradle. The {@link MimicPluginExtension#outputDirectory} is
+ * automatically added to the main {@link SourceSet}.
+ */
 public abstract class MimicPlugin implements Plugin<Project> {
+
+	/**
+	 * Default constructor
+	 */
+	public MimicPlugin() {
+	}
 
 	@Override
 	public void apply(Project project) {
@@ -39,7 +57,7 @@ public abstract class MimicPlugin implements Plugin<Project> {
 				try (URLClassLoader cl = createClassLoader(main)) {
 					for (String className : extension.classes) {
 						Class<?> clazz = cl.loadClass(className);
-						Mimic.createMimic(clazz, extension.packageName, outputDir);
+						MimicCreator.createMimic(clazz, extension.packageName, outputDir);
 					}
 				} catch (ClassNotFoundException | IOException e) {
 					throw new RuntimeException(e);
@@ -53,6 +71,15 @@ public abstract class MimicPlugin implements Plugin<Project> {
 		project.getTasksByName("compileJava", false).forEach(t -> t.dependsOn(mimic));
 	}
 
+	/**
+	 * Returns a new class loader that can load all classes from the compile
+	 * classpath of the passed {@code SourceSet}
+	 *
+	 * @param main The main {@code SourceSet}
+	 * @return A class loader that can load all classes from the compile classpath
+	 *         of {@code main}
+	 * @throws MalformedURLException See {@link java.net.URI#toURL()}
+	 */
 	protected URLClassLoader createClassLoader(SourceSet main) throws MalformedURLException {
 		List<File> classFiles = new ArrayList<>(main.getCompileClasspath().getFiles());
 		URL[] urls = new URL[classFiles.size()];

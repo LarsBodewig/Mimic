@@ -15,11 +15,24 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import dev.bodewig.mimic.core.Mimic;
+import dev.bodewig.mimic.core.MimicCreator;
 
+/**
+ * A mimic is a generated wrapper with type-safe accessors using Java reflection
+ * to get and set non-public fields.
+ * <p>
+ * This plugin creates mimics for a configured list of classes, in a configured
+ * package, in a configured output directory.
+ */
 @Mojo(name = "mimic", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresDependencyResolution = ResolutionScope.RUNTIME)
 @Execute(phase = LifecyclePhase.COMPILE)
-public class MimicMojo extends AbstractMimicMojo {
+public class MimicMojo extends MimicMojoModel {
+
+	/**
+	 * Default constructor
+	 */
+	public MimicMojo() {
+	}
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -28,7 +41,7 @@ public class MimicMojo extends AbstractMimicMojo {
 			for (String className : classes) {
 				Class<?> clazz = loadClass(cl, className);
 				try {
-					Mimic.createMimic(clazz, packageName, outputDirectory);
+					MimicCreator.createMimic(clazz, packageName, outputDirectory);
 				} catch (IOException e) {
 					throw new MojoExecutionException("Could not write file to " + outputDirectory, e);
 				}
@@ -39,6 +52,14 @@ public class MimicMojo extends AbstractMimicMojo {
 		mavenProject.addCompileSourceRoot(outputDirectory.getPath());
 	}
 
+	/**
+	 * Creates a class loader configured with all classes from the compile classpath
+	 * and build output directory
+	 * 
+	 * @return The configured class loader
+	 * @throws MojoExecutionException See {@link java.net.URI#toURL()} and
+	 *                                {@link org.apache.maven.project.MavenProject#getCompileClasspathElements()}
+	 */
 	@SuppressWarnings("unchecked")
 	protected URLClassLoader createClassLoader() throws MojoExecutionException {
 		URL[] urls = null;
@@ -55,6 +76,14 @@ public class MimicMojo extends AbstractMimicMojo {
 		return new URLClassLoader(urls, this.getClass().getClassLoader());
 	}
 
+	/**
+	 * Load the class with the given name using the given class loader
+	 * 
+	 * @param cl        The class loader to use
+	 * @param className The name of the class
+	 * @return The loaded class
+	 * @throws MojoExecutionException See {@link ClassLoader#loadClass(String)}
+	 */
 	protected Class<?> loadClass(ClassLoader cl, String className) throws MojoExecutionException {
 		try {
 			return cl.loadClass(className);
