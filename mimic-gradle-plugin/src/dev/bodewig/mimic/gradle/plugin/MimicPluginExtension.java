@@ -25,7 +25,7 @@ public class MimicPluginExtension {
 	 * loadable from the compile classpath of the main
 	 * {@link org.gradle.api.tasks.SourceSet}.
 	 * <p>
-	 * Due to limitations in gradle this excludes classes that are part of the
+	 * Due to limitations in Gradle this excludes classes that are part of the
 	 * module the mimic plugin is applied to. If you need mimics for your own
 	 * classes, create a separate project module that depends on your other module
 	 * and applies the plugin.

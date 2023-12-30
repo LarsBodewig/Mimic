@@ -57,8 +57,10 @@ public class MimicMojo extends MimicMojoModel {
 	 * and build output directory
 	 * 
 	 * @return The configured class loader
-	 * @throws MojoExecutionException See {@link java.net.URI#toURL()} and
-	 *                                {@link org.apache.maven.project.MavenProject#getCompileClasspathElements()}
+	 * @throws MojoExecutionException See {@link java.net.URI#toURL() URI.toURL()}
+	 *                                and
+	 *                                {@link org.apache.maven.project.MavenProject#getCompileClasspathElements()
+	 *                                MavenProject.getCompileClasspathElements()}
 	 */
 	@SuppressWarnings("unchecked")
 	protected URLClassLoader createClassLoader() throws MojoExecutionException {

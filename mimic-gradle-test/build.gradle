@@ -25,7 +25,7 @@ mimic {
 }
 
 dependencies {
-	implementation "dev.bodewig.mimic:mimic-maven-test:$version"
+	compileOnly "dev.bodewig.mimic:mimic-maven-test:$version"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

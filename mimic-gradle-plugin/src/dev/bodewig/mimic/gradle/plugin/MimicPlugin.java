@@ -11,6 +11,7 @@ import java.util.List;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -25,9 +26,9 @@ import dev.bodewig.mimic.core.MimicCreator;
  * classpath, in a configured package, in a configured output directory (see
  * {@link MimicPluginExtension}).
  * <p>
- * The generated classes are written in Java and need to be compiled with the
- * Java plugin for gradle. The {@link MimicPluginExtension#outputDirectory} is
- * automatically added to the main {@link SourceSet}.
+ * The generated classes are written in Java. The
+ * {@link MimicPluginExtension#outputDirectory outputDirectory} is automatically
+ * added to the main {@link SourceSet}.
  */
 public abstract class MimicPlugin implements Plugin<Project> {
 
@@ -40,6 +41,7 @@ public abstract class MimicPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		MimicPluginExtension extension = project.getExtensions().create("mimic", MimicPluginExtension.class);
+		project.getPlugins().apply(JavaPlugin.class);
 
 		TaskProvider<Task> mimic = project.getTasks().register("mimic", task -> {
 			task.doLast(s -> {
