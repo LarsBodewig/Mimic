@@ -38,23 +38,47 @@ public class Mimic {
 		typeBuilder.addMethod(constructor);
 
 		for (Field f : getFields(clazz)) {
-			String getterName = "get" + pascalCase(f.getName());
-			MethodSpec.Builder getterBuilder = MethodSpec.methodBuilder(getterName).addModifiers(Modifier.PUBLIC)
-					.returns(f.getType());
-			if (java.lang.reflect.Modifier.isPublic(f.getModifiers())) {
-				getterBuilder.addStatement("return instance.$L", f.getName());
-			} else {
-				getterBuilder.beginControlFlow("try")
-						.addStatement("$T f = $T.class.getDeclaredField($S)", Field.class, f.getDeclaringClass(),
-								f.getName())
-						.addStatement("f.setAccessible(true)").addStatement("return ($T) f.get(instance)", f.getType())
-						.nextControlFlow("catch ($T | $T e)", NoSuchFieldException.class, IllegalAccessException.class)
-						.addStatement("throw new $T(e)", RuntimeException.class).endControlFlow();
-			}
-			typeBuilder.addMethod(getterBuilder.build());
+			MethodSpec getter = createGetter(f);
+			MethodSpec setter = createSetter(f);
+			typeBuilder.addMethod(getter);
+			typeBuilder.addMethod(setter);
 		}
 
 		return typeBuilder.build();
+	}
+
+	public static MethodSpec createGetter(Field f) {
+		String getterName = "get" + pascalCase(f.getName());
+		MethodSpec.Builder getterBuilder = MethodSpec.methodBuilder(getterName).addModifiers(Modifier.PUBLIC)
+				.returns(f.getType());
+		if (java.lang.reflect.Modifier.isPublic(f.getModifiers())) {
+			getterBuilder.addStatement("return instance.$L", f.getName());
+		} else {
+			getterBuilder.beginControlFlow("try")
+					.addStatement("$T f = $T.class.getDeclaredField($S)", Field.class, f.getDeclaringClass(),
+							f.getName())
+					.addStatement("f.setAccessible(true)").addStatement("return ($T) f.get(instance)", f.getType())
+					.nextControlFlow("catch ($T | $T e)", NoSuchFieldException.class, IllegalAccessException.class)
+					.addStatement("throw new $T(e)", RuntimeException.class).endControlFlow();
+		}
+		return getterBuilder.build();
+	}
+
+	public static MethodSpec createSetter(Field f) {
+		String setterName = "set" + pascalCase(f.getName());
+		MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(setterName).addModifiers(Modifier.PUBLIC)
+				.addParameter(f.getType(), "value");
+		if (java.lang.reflect.Modifier.isPublic(f.getModifiers())) {
+			setterBuilder.addStatement("instance.$L = value", f.getName());
+		} else {
+			setterBuilder.beginControlFlow("try")
+					.addStatement("$T f = $T.class.getDeclaredField($S)", Field.class, f.getDeclaringClass(),
+							f.getName())
+					.addStatement("f.setAccessible(true)").addStatement("f.set(instance, value)")
+					.nextControlFlow("catch ($T | $T e)", NoSuchFieldException.class, IllegalAccessException.class)
+					.addStatement("throw new $T(e)", RuntimeException.class).endControlFlow();
+		}
+		return setterBuilder.build();
 	}
 
 	public static List<Field> getFields(Class<?> clazz) {
