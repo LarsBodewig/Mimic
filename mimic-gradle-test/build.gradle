@@ -14,10 +14,18 @@ java {
     sourceCompatibility = JavaVersion.VERSION_19
 }
 
+clean {
+    delete 'target/generated-sources/mimic/'
+}
+
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
-	classes = ['dev.bodewig.mimic.gradle.test.MyTestClass']
-	outputDirectory = 'src/'
+	classes = ['dev.bodewig.mimic.maven.test.MyTestClass']
+	outputDirectory = 'target/generated-sources/mimic/'
+}
+
+dependencies {
+	implementation "dev.bodewig.mimic:mimic-maven-test:$version"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

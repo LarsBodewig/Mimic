@@ -2,6 +2,7 @@ package dev.bodewig.mimic.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ public class Mimic {
 		TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(typeName).addModifiers(Modifier.PUBLIC);
 
 		typeBuilder.addField(clazz, "instance", Modifier.PRIVATE, Modifier.FINAL);
-		MethodSpec constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addParameter(clazz, "instance")
-				.addStatement("this.instance = instance").build();
+		MethodSpec constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
+				.addParameter(clazz, "instance").addStatement("this.instance = instance").build();
 		typeBuilder.addMethod(constructor);
 
 		for (Field f : getFields(clazz)) {
@@ -58,7 +59,7 @@ public class Mimic {
 
 	public static List<Field> getFields(Class<?> clazz) {
 		Field[] ownFields = clazz.getDeclaredFields();
-		Field.setAccessible(ownFields, true);
+		AccessibleObject.setAccessible(ownFields, true);
 		List<Field> fields = new ArrayList<>();
 		fields.addAll(List.of(ownFields));
 		if (clazz.getSuperclass() != null) {
