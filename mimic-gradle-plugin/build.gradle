@@ -1,6 +1,5 @@
 buildscript {
-	group = "$gradle.group"
-	version = "$gradle.version"
+	group = "$groupId" // maven-publish uses "project.group" as groupId
 }
 
 plugins {

@@ -40,6 +40,9 @@
 							<executable>../gradlew</executable>
 							<arguments>
 								<argument>clean</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -54,6 +57,9 @@
 							<arguments>
 								<argument>mimic</argument>
 								<argument>build</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>

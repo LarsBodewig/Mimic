@@ -1,7 +1,7 @@
 plugins {
 	id 'eclipse'
 	id 'java-library'
-	id 'dev.bodewig.mimic.gradle.plugin'
+	id 'dev.bodewig.mimic.gradle.plugin' version "$version"
 }
 
 repositories {
@@ -24,4 +24,4 @@ mimic {
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-eclipse.project.name = "mimic-gradle-test"
+eclipse.project.name = "$name"

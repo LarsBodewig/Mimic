@@ -39,6 +39,9 @@
 							<executable>../gradlew</executable>
 							<arguments>
 								<argument>clean</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -52,6 +55,9 @@
 							<executable>../gradlew</executable>
 							<arguments>
 								<argument>build</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -65,6 +71,25 @@
 							<executable>../gradlew</executable>
 							<arguments>
 								<argument>publishToMavenLocal</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>deploy</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>deploy</phase>
+						<configuration>
+							<executable>../gradlew</executable>
+							<arguments>
+								<argument>publish</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>
