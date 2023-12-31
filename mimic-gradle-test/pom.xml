@@ -60,7 +60,23 @@
 						<configuration>
 							<executable>../gradlew</executable>
 							<arguments>
-								<argument>build</argument>
+								<argument>assemble</argument>
+								<argument>-PgroupId=${project.groupId}</argument>
+								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-Pversion=${project.version}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<executable>../gradlew</executable>
+							<arguments>
+								<argument>test</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
 								<argument>-PartifactId=${project.artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
