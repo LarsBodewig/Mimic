@@ -1,17 +1,13 @@
-buildscript {
-	group = "$groupId" // maven-publish uses "project.group" as groupId
-}
-
 plugins {
-	id 'eclipse'
+    id 'eclipse'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '1.2.1'
+    id 'maven-publish'
 }
 
 repositories {
-	mavenLocal()
-	mavenCentral()
-	gradlePluginPortal()
+    mavenLocal()
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 java {
@@ -24,6 +20,7 @@ gradlePlugin {
             id = 'dev.bodewig.mimic.gradle.plugin'
             displayName = 'mimic-gradle-plugin'
             description = 'Create reflective accessors for third party classes'
+            tags.set(['reflection', 'codegen', 'java', 'wrapper'])
             implementationClass = 'dev.bodewig.mimic.gradle.plugin.MimicPlugin'
             website = 'https://github.com/LarsBodewig/Mimic'
             vcsUrl = 'https://github.com/LarsBodewig/Mimic.git'
@@ -31,8 +28,42 @@ gradlePlugin {
     }
 }
 
+signing {
+    sign publishing.publications.mavenJava
+}
+
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+            url = "$version".endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = "$groupId"
+            artifactId = "$artifactId"
+            version = "$version"
+            pom {
+                name = 'Mimic Gradle plugin'
+                description = 'Gradle plugin to create type-safe accessors using reflection'
+                pom.withXml {
+                    def pom = asNode()
+                    def parent = pom.appendNode('parent')
+                    parent.appendNode('groupId', "$groupId")
+                    parent.appendNode('artifactId', 'mimic-parent')
+                    parent.appendNode('version', "$version")
+                    pom.remove(pom.get('groupId'))
+                    pom.remove(pom.get('version'))
+                }
+            }
+        }
+    }
+}
+
 dependencies {
-	implementation "dev.bodewig.mimic:mimic-core:$version"
+    implementation "dev.bodewig.mimic:mimic-core:$version"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
