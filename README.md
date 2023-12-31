@@ -1,5 +1,3 @@
-# *To be published soon*
-
 [![Maven plugin available on Maven Central](https://img.shields.io/maven-central/v/dev.bodewig.mimic/mimic-maven-plugin?label=Maven%20plugin%20available%20on%20Maven%20Central)](https://central.sonatype.com/artifact/dev.bodewig.mimic/mimic-maven-plugin)
 [![Gradle plugin available on Maven Central](https://img.shields.io/maven-central/v/dev.bodewig.mimic/mimic-gradle-plugin?label=Gradle%20plugin%20available%20on%20Maven%20Central)](https://central.sonatype.com/artifact/dev.bodewig.mimic/mimic-gradle-plugin)
 
