@@ -1,3 +1,7 @@
+buildscript {
+    group = "$groupId"
+}
+
 plugins {
     id 'eclipse'
     id 'java-gradle-plugin'
@@ -28,9 +32,9 @@ gradlePlugin {
     }
 }
 
-signing {
+/*signing {
     sign publishing.publications.mavenJava
-}
+}*/
 
 publishing {
     repositories {
@@ -42,9 +46,6 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
-            groupId = "$groupId"
-            artifactId = "$artifactId"
-            version = "$version"
             pom {
                 name = 'Mimic Gradle plugin'
                 description = 'Gradle plugin to create type-safe accessors using reflection'

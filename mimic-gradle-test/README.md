@@ -9,7 +9,8 @@ The following phases are mapped to Gradle tasks:
 | Maven phase | Gradle task         |
 | ----------- | ------------------- |
 | clean       | clean               |
-| compile     | build               |
+| compile     | assemble            |
+| test        | test                |
 
 The `maven-install-plugin` is skipped even though Gradle does not install any artifacts.
 

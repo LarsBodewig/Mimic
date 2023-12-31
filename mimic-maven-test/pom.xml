@@ -13,6 +13,15 @@
 	<artifactId>mimic-maven-test</artifactId>
 	<packaging>jar</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.9.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -29,6 +38,25 @@
 								<class>dev.bodewig.mimic.maven.test.MyTestClass</class>
 							</classes>
 							<packageName>dev.bodewig.mimic.maven.test.generated</packageName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>
+									${project.build.directory}/generated-sources/mimic</source>
+							</sources>
 						</configuration>
 					</execution>
 				</executions>
