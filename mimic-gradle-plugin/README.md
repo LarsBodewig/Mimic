@@ -24,6 +24,11 @@ To invoke Gradle without Maven, the following project properties have to be supp
 * artifactId=mimic-gradle-plugin
 * version=
 
-The `mimic-gradle-plugin` also applies the Gradle Java plugin.
+Additionally to publish with Gradle:
+
+* gpgKey=
+* gpgPass=
+
+The `mimic-gradle-plugin` also applies the Gradle Java plugin automatically.
 
 See the project `README` for the plugin usage.

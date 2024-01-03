@@ -6,6 +6,7 @@ plugins {
     id 'eclipse'
     id 'java-gradle-plugin'
     id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
@@ -16,12 +17,14 @@ repositories {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_19
+    withJavadocJar()
+    withSourcesJar()
 }
 
 gradlePlugin {
     plugins {
         mimic {
-            id = 'dev.bodewig.mimic.gradle.plugin'
+            id = 'dev.bodewig.mimic'
             displayName = 'mimic-gradle-plugin'
             description = 'Create reflective accessors for third party classes'
             tags.set(['reflection', 'codegen', 'java', 'wrapper'])
@@ -32,9 +35,26 @@ gradlePlugin {
     }
 }
 
-/*signing {
-    sign publishing.publications.mavenJava
-}*/
+project.gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(':publish')) {
+		artifacts {
+		    archives jar
+		    archives sourcesJar
+		    archives javadocJar
+		}
+		signing {
+		    def gpgKey = System.getenv('gpgKey')
+		    def gpgPass = System.getenv('gpgPass')
+		    useInMemoryPgpKeys(gpgKey, gpgPass)
+			sign configurations.archives
+	    }
+	}
+}
+
+//publishing.publications.named('mimicPluginMarkerMaven') { pub ->
+publishing.publications.withType(MavenPublication) { pub ->
+	println pub.pom
+}
 
 publishing {
     repositories {
@@ -42,13 +62,18 @@ publishing {
             def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
             def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots'
             url = "$version".endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
         }
     }
-    publications {
-        mavenJava(MavenPublication) {
+	/*publications {
+        mimicPluginMarkerMaven(MavenPublication) {
+            from components.java
+            //artifact sourcesJar
+            //artifact javadocJar
             pom {
                 name = 'Mimic Gradle plugin'
                 description = 'Gradle plugin to create type-safe accessors using reflection'
+                artifactId = 'mimic-gradle-plugin2'
                 pom.withXml {
                     def pom = asNode()
                     def parent = pom.appendNode('parent')
@@ -60,7 +85,7 @@ publishing {
                 }
             }
         }
-    }
+    }*/
 }
 
 dependencies {

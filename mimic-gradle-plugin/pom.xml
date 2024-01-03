@@ -89,7 +89,17 @@
 								<argument>-PgroupId=${project.groupId}</argument>
 								<argument>-PartifactId=${project.artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
+								<argument>--info</argument>
+								<argument>--debug</argument>
 							</arguments>
+							<environmentVariables>
+								<ORG_GRADLE_PROJECT_mavenUsername>
+									${env.MAVEN_USERNAME}</ORG_GRADLE_PROJECT_mavenUsername>
+								<ORG_GRADLE_PROJECT_mavenPassword>
+									${env.MAVEN_CENTRAL_TOKEN}</ORG_GRADLE_PROJECT_mavenPassword>
+								<gpgKey>${env.MAVEN_GPG_PRIVATE_KEY}</gpgKey>
+								<gpgPass>${env.MAVEN_GPG_PASSPHRASE}</gpgPass>
+							</environmentVariables>
 						</configuration>
 					</execution>
 				</executions>
