@@ -6,6 +6,7 @@ plugins {
     id 'eclipse'
     id 'java-gradle-plugin'
     id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
@@ -16,6 +17,8 @@ repositories {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_19
+    withJavadocJar()
+    withSourcesJar()
 }
 
 gradlePlugin {
@@ -32,10 +35,23 @@ gradlePlugin {
     }
 }
 
-/*signing {
-    sign publishing.publications.mavenJava
-}*/
+// doesnt run
+tasks.register('sign') {
+ 	dependsOn("build")
+ 	mustRunAfter("build")
+    doLast {
+    	signing {
+    		useInMemoryPgpKeys("$gpgKey", "$gpgPass")
+    		sign publishing.publications.mavenJava
+    	}
+    }
+}
 
+// Multiple publications with coordinates
+// 'dev.bodewig.mimic:mimic-gradle-plugin:1.0.0-SNAPSHOT' are published to
+// repository 'mavenLocal'. The publications 'mavenJava' in root project
+// 'mimic-gradle-plugin' and 'pluginMaven' in root project 'mimic-gradle-plugin'
+// will overwrite each other!
 publishing {
     repositories {
         maven {
@@ -46,6 +62,7 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
+            from components.java
             pom {
                 name = 'Mimic Gradle plugin'
                 description = 'Gradle plugin to create type-safe accessors using reflection'

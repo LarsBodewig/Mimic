@@ -13,6 +13,11 @@
 	<artifactId>mimic-gradle-plugin</artifactId>
 	<packaging>pom</packaging>
 
+	<properties>
+		<gpgKey>${env.MAVEN_GPG_PRIVATE_KEY}</gpgKey>
+		<gpgPass>${env.MAVEN_GPG_PASSPHRASE}</gpgPass>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>dev.bodewig.mimic</groupId>
@@ -89,6 +94,8 @@
 								<argument>-PgroupId=${project.groupId}</argument>
 								<argument>-PartifactId=${project.artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
+								<argument>-PgpgKey=${gpgKey}</argument>
+								<argument>-PgpgPass=${gpgPass}</argument>
 							</arguments>
 						</configuration>
 					</execution>
