@@ -25,7 +25,7 @@ gradlePlugin {
     plugins {
         mimic {
             id = 'dev.bodewig.mimic'
-            displayName = 'mimic-gradle-plugin'
+            displayName = 'Mimic Gradle Plugin'
             description = 'Create reflective accessors for third party classes'
             tags.set(['reflection', 'codegen', 'java', 'wrapper'])
             implementationClass = 'dev.bodewig.mimic.gradle.plugin.MimicPlugin'
@@ -35,26 +35,26 @@ gradlePlugin {
     }
 }
 
-project.gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.hasTask(':publish')) {
-		artifacts {
-		    archives jar
-		    archives sourcesJar
-		    archives javadocJar
-		}
+//project.gradle.taskGraph.whenReady { taskGraph ->
+//    if (taskGraph.hasTask(':publish')) {
 		signing {
-		    def gpgKey = System.getenv('gpgKey')
-		    def gpgPass = System.getenv('gpgPass')
-		    useInMemoryPgpKeys(gpgKey, gpgPass)
-			sign configurations.archives
-	    }
-	}
-}
-
-//publishing.publications.named('mimicPluginMarkerMaven') { pub ->
-publishing.publications.withType(MavenPublication) { pub ->
-	println pub.pom
-}
+			def gpgKey = System.getenv('gpgKey')
+			def gpgPass = System.getenv('gpgPass')
+			useInMemoryPgpKeys(gpgKey, gpgPass)
+    		useGpgCmd()
+		}
+		/*tasks.withType(Sign) {
+			doFirst {
+				println 'doSigning'
+			    def gpgKey = System.getenv('gpgKey')
+			    def gpgPass = System.getenv('gpgPass')
+			    useInMemoryPgpKeys(gpgKey, gpgPass)
+				sign publishing.publications.mimicPluginMarkerMaven
+				sign publishing.publications.pluginMaven
+			}
+	    }*/
+//	}
+//}
 
 publishing {
     repositories {
@@ -65,27 +65,17 @@ publishing {
             credentials(PasswordCredentials)
         }
     }
-	/*publications {
-        mimicPluginMarkerMaven(MavenPublication) {
-            from components.java
-            //artifact sourcesJar
-            //artifact javadocJar
-            pom {
-                name = 'Mimic Gradle plugin'
-                description = 'Gradle plugin to create type-safe accessors using reflection'
-                artifactId = 'mimic-gradle-plugin2'
-                pom.withXml {
-                    def pom = asNode()
-                    def parent = pom.appendNode('parent')
-                    parent.appendNode('groupId', "$groupId")
-                    parent.appendNode('artifactId', 'mimic-parent')
-                    parent.appendNode('version', "$version")
-                    pom.remove(pom.get('groupId'))
-                    pom.remove(pom.get('version'))
-                }
-            }
-        }
-    }*/
+    publications.withType(MavenPublication) { pub ->
+	    pom.withXml {
+	        def pom = asNode()
+	        def parent = pom.appendNode('parent')
+	        parent.appendNode('groupId', "$groupId")
+	        parent.appendNode('artifactId', 'mimic-parent')
+	        parent.appendNode('version', "$version")
+	        pom.remove(pom.get('groupId'))
+	        pom.remove(pom.get('version'))
+	    }
+	}
 }
 
 dependencies {

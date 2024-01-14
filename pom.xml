@@ -10,6 +10,9 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<name>Mimic parent</name>
+	<description>Parent POM for the mimic project</description>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>19</java.version>
