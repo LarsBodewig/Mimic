@@ -1,7 +1,7 @@
 plugins {
 	id 'eclipse'
 	id 'java-library'
-	id 'dev.bodewig.mimic.gradle.plugin' version "$version"
+	id 'dev.bodewig.mimic' version "$version"
 }
 
 repositories {
