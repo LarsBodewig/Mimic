@@ -6,7 +6,6 @@ plugins {
     id 'eclipse'
     id 'java-gradle-plugin'
     id 'maven-publish'
-    id 'signing'
 }
 
 repositories {
@@ -35,47 +34,16 @@ gradlePlugin {
     }
 }
 
-//project.gradle.taskGraph.whenReady { taskGraph ->
-//    if (taskGraph.hasTask(':publish')) {
-		signing {
-			def gpgKey = System.getenv('gpgKey')
-			def gpgPass = System.getenv('gpgPass')
-			useInMemoryPgpKeys(gpgKey, gpgPass)
-    		useGpgCmd()
-		}
-		/*tasks.withType(Sign) {
-			doFirst {
-				println 'doSigning'
-			    def gpgKey = System.getenv('gpgKey')
-			    def gpgPass = System.getenv('gpgPass')
-			    useInMemoryPgpKeys(gpgKey, gpgPass)
-				sign publishing.publications.mimicPluginMarkerMaven
-				sign publishing.publications.pluginMaven
-			}
-	    }*/
-//	}
-//}
-
-publishing {
-    repositories {
-        maven {
-            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots'
-            url = "$version".endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials(PasswordCredentials)
-        }
+publishing.publications.withType(MavenPublication) { pub ->
+    pom.withXml {
+        def pom = asNode()
+        def parent = pom.appendNode('parent')
+        parent.appendNode('groupId', "$groupId")
+        parent.appendNode('artifactId', 'mimic-parent')
+        parent.appendNode('version', "$version")
+        pom.remove(pom.get('groupId'))
+        pom.remove(pom.get('version'))
     }
-    publications.withType(MavenPublication) { pub ->
-	    pom.withXml {
-	        def pom = asNode()
-	        def parent = pom.appendNode('parent')
-	        parent.appendNode('groupId', "$groupId")
-	        parent.appendNode('artifactId', 'mimic-parent')
-	        parent.appendNode('version', "$version")
-	        pom.remove(pom.get('groupId'))
-	        pom.remove(pom.get('version'))
-	    }
-	}
 }
 
 dependencies {
