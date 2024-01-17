@@ -10,7 +10,7 @@
 		<artifactId>mimic-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>mimic-gradle-plugin</artifactId>
+	<artifactId>mimic-gradle-plugin-wrapper</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -84,13 +84,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -22,8 +22,8 @@
 		<module>mimic-core</module>
 		<module>mimic-maven-plugin</module>
 		<module>mimic-maven-test</module>
-		<module>mimic-gradle-plugin</module>
-		<module>mimic-gradle-test</module>
+		<module>mimic-gradle-plugin-wrapper</module>
+		<module>mimic-gradle-test-wrapper</module>
 	</modules>
 
 	<build>
