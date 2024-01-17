@@ -10,13 +10,17 @@
 		<artifactId>mimic-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>mimic-gradle-test</artifactId>
+	<artifactId>mimic-gradle-test-wrapper</artifactId>
 	<packaging>pom</packaging>
+
+	<properties>
+		<gradle-test-artifactId>mimic-gradle-test</gradle-test-artifactId>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>dev.bodewig.mimic</groupId>
-			<artifactId>mimic-gradle-plugin</artifactId>
+			<artifactId>mimic-gradle-plugin-wrapper</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 			<scope>runtime</scope>
@@ -46,7 +50,7 @@
 							<arguments>
 								<argument>clean</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
-								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-PartifactId=${gradle-test-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
@@ -62,7 +66,7 @@
 							<arguments>
 								<argument>assemble</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
-								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-PartifactId=${gradle-test-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
@@ -78,7 +82,7 @@
 							<arguments>
 								<argument>test</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
-								<argument>-PartifactId=${project.artifactId}</argument>
+								<argument>-PartifactId=${gradle-test-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
@@ -88,13 +92,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
