@@ -13,7 +13,7 @@
 	<artifactId>mimic-core</artifactId>
 
 	<name>Mimic core</name>
-	<description>Core functionality to create mimics</description>
+	<description>Core functionality to create Mimics</description>
 
 	<dependencies>
 		<dependency>
