@@ -17,7 +17,8 @@
 		<gradle-plugin-artifactId>mimic-gradle-plugin</gradle-plugin-artifactId>
 		<gradle-plugin-name>${gradle-plugin-artifactId}-${project.version}</gradle-plugin-name>
 		<gradle-plugin-marker-artifactId>dev.bodewig.mimic.gradle.plugin</gradle-plugin-marker-artifactId>
-		<gradle-plugin-marker-name>${gradle-plugin-marker-artifactId}-${project.version}</gradle-plugin-marker-name>
+		<gradle-plugin-marker-name>
+			${gradle-plugin-marker-artifactId}-${project.version}</gradle-plugin-marker-name>
 	</properties>
 
 	<dependencies>
@@ -25,7 +26,6 @@
 			<groupId>dev.bodewig.mimic</groupId>
 			<artifactId>mimic-core</artifactId>
 			<version>${project.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
@@ -46,7 +46,8 @@
 							<arguments>
 								<argument>clean</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
-								<argument>-PartifactId=${gradle-plugin-artifactId}</argument>
+								<argument>
+									-PartifactId=${gradle-plugin-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
@@ -62,7 +63,8 @@
 							<arguments>
 								<argument>build</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
-								<argument>-PartifactId=${gradle-plugin-artifactId}</argument>
+								<argument>
+									-PartifactId=${gradle-plugin-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
@@ -78,7 +80,8 @@
 							<arguments>
 								<argument>publishToMavenLocal</argument>
 								<argument>-PgroupId=${project.groupId}</argument>
-								<argument>-PartifactId=${gradle-plugin-artifactId}</argument>
+								<argument>
+									-PartifactId=${gradle-plugin-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
 							</arguments>
 						</configuration>
@@ -94,21 +97,21 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>release</id>
 			<build>
 				<plugins>
 					<plugin>
-				        <groupId>org.apache.maven.plugins</groupId>
-				        <artifactId>maven-dependency-plugin</artifactId>
-				        <version>3.6.1</version>
-				        <configuration>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>3.6.1</version>
+						<configuration>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
-				        <executions>
+						<executions>
 							<execution>
 								<id>get-gradle-plugin</id>
 								<goals>
@@ -119,26 +122,30 @@
 									<artifactItems>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>${gradle-plugin-artifactId}</artifactId>
+											<artifactId>
+												${gradle-plugin-artifactId}</artifactId>
 											<version>${project.version}</version>
 											<type>pom</type>
 										</artifactItem>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>${gradle-plugin-artifactId}</artifactId>
+											<artifactId>
+												${gradle-plugin-artifactId}</artifactId>
 											<version>${project.version}</version>
 											<type>jar</type>
 										</artifactItem>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>${gradle-plugin-artifactId}</artifactId>
+											<artifactId>
+												${gradle-plugin-artifactId}</artifactId>
 											<version>${project.version}</version>
 											<type>jar</type>
 											<classifier>sources</classifier>
 										</artifactItem>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>${gradle-plugin-artifactId}</artifactId>
+											<artifactId>
+												${gradle-plugin-artifactId}</artifactId>
 											<version>${project.version}</version>
 											<type>jar</type>
 											<classifier>javadoc</classifier>
@@ -156,7 +163,8 @@
 									<artifactItems>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>${gradle-plugin-marker-artifactId}</artifactId>
+											<artifactId>
+												${gradle-plugin-marker-artifactId}</artifactId>
 											<version>${project.version}</version>
 											<type>pom</type>
 										</artifactItem>
@@ -182,12 +190,18 @@
 								</goals>
 								<phase>deploy</phase>
 								<configuration>
-									<file>${project.build.directory}/dependency/${gradle-plugin-name}.jar</file>
-									<pomFile>${project.build.directory}/dependency/${gradle-plugin-name}.pom</pomFile>
-									<sources>${project.build.directory}/dependency/${gradle-plugin-name}-sources.jar</sources>
-									<javadoc>${project.build.directory}/dependency/${gradle-plugin-name}-javadoc.jar</javadoc>
-									<repositoryId>${project.distributionManagement.repository.id}</repositoryId>
-									<url>${project.distributionManagement.repository.url}</url>
+									<file>
+										${project.build.directory}/dependency/${gradle-plugin-name}.jar</file>
+									<pomFile>
+										${project.build.directory}/dependency/${gradle-plugin-name}.pom</pomFile>
+									<sources>
+										${project.build.directory}/dependency/${gradle-plugin-name}-sources.jar</sources>
+									<javadoc>
+										${project.build.directory}/dependency/${gradle-plugin-name}-javadoc.jar</javadoc>
+									<repositoryId>
+										${project.distributionManagement.repository.id}</repositoryId>
+									<url>
+										${project.distributionManagement.repository.url}</url>
 								</configuration>
 							</execution>
 							<execution>
@@ -197,11 +211,15 @@
 								</goals>
 								<phase>deploy</phase>
 								<configuration>
-									<file>${project.build.directory}/dependency/${gradle-plugin-marker-name}.pom</file>
-									<pomFile>${project.build.directory}/dependency/${gradle-plugin-marker-name}.pom</pomFile>
+									<file>
+										${project.build.directory}/dependency/${gradle-plugin-marker-name}.pom</file>
+									<pomFile>
+										${project.build.directory}/dependency/${gradle-plugin-marker-name}.pom</pomFile>
 									<packaging>pom</packaging>
-									<repositoryId>${project.distributionManagement.repository.id}</repositoryId>
-									<url>${project.distributionManagement.repository.url}</url>
+									<repositoryId>
+										${project.distributionManagement.repository.id}</repositoryId>
+									<url>
+										${project.distributionManagement.repository.url}</url>
 								</configuration>
 							</execution>
 						</executions>

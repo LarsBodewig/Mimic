@@ -29,7 +29,7 @@
 			<groupId>dev.bodewig.mimic</groupId>
 			<artifactId>mimic-maven-test</artifactId>
 			<version>${project.version}</version>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
