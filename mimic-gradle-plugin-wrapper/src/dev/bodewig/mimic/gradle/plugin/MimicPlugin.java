@@ -19,10 +19,10 @@ import org.gradle.api.tasks.TaskProvider;
 import dev.bodewig.mimic.core.MimicCreator;
 
 /**
- * A mimic is a generated wrapper with type-safe accessors using Java reflection
+ * A Mimic is a generated wrapper with type-safe accessors using Java reflection
  * to get and set non-public fields.
  * <p>
- * This plugin creates mimics for a configured list of classes on the compile
+ * This plugin creates Mimics for a configured list of classes on the compile
  * classpath, in a configured package, in a configured output directory (see
  * {@link MimicPluginExtension}).
  * <p>
@@ -55,7 +55,7 @@ public abstract class MimicPlugin implements Plugin<Project> {
 				SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
 				SourceSet main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
-				// create mimics
+				// create Mimics
 				try (URLClassLoader cl = createClassLoader(main)) {
 					for (String className : extension.classes) {
 						Class<?> clazz = cl.loadClass(className);
