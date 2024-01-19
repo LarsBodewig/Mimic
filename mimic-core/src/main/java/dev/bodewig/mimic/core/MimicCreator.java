@@ -14,7 +14,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 /**
- * Use {@link #createMimic(Class, String, File)} to create a mimic for a given
+ * Use {@link #createMimic(Class, String, File)} to create a Mimic for a given
  * class in a configured package in the supplied output directory.
  */
 public class MimicCreator {
@@ -26,14 +26,14 @@ public class MimicCreator {
 	}
 
 	/**
-	 * Creates a mimic for the given class in a the given package in the given
+	 * Creates a Mimic for the given class in a the given package in the given
 	 * output directory.
 	 * <p>
-	 * A mimic is a generated wrapper with type-safe accessors using Java reflection
+	 * A Mimic is a generated wrapper with type-safe accessors using Java reflection
 	 * to get and set non-public fields.
-	 * 
-	 * @param clazz           The class to create a mimic for
-	 * @param packageName     The target package for the generated mimic
+	 *
+	 * @param clazz           The class to create a Mimic for
+	 * @param packageName     The target package for the generated Mimic
 	 * @param outputDirectory The output directory for the java class
 	 * @throws IOException If writing the java class file to the output directory
 	 *                     fails
@@ -46,7 +46,7 @@ public class MimicCreator {
 
 	/**
 	 * Creates a pascal case string by converting the first character to upper case.
-	 * 
+	 *
 	 * @param s The string to convert
 	 * @return The pascal case string
 	 */
@@ -55,13 +55,13 @@ public class MimicCreator {
 	}
 
 	/**
-	 * Creates a mimic for the given class.
+	 * Creates a Mimic for the given class.
 	 * <p>
 	 * The type contains an instance field, a constructor with a parameter to set
 	 * the instance and getters and setters for each field from the class.
-	 * 
-	 * @param clazz The class to create a mimic for
-	 * @return The {@code TypeSpec} for the mimic
+	 *
+	 * @param clazz The class to create a Mimic for
+	 * @return The {@code TypeSpec} for the Mimic
 	 */
 	private static TypeSpec createMimicType(Class<?> clazz) {
 		String typeName = clazz.getSimpleName() + "Mimic";
@@ -85,7 +85,7 @@ public class MimicCreator {
 	/**
 	 * Creates a getter for the given field. Uses reflection if the field is
 	 * non-public.
-	 * 
+	 *
 	 * @param f The field to create a getter for
 	 * @return The {@code MethodSpec} for the getter
 	 */
@@ -109,7 +109,7 @@ public class MimicCreator {
 	/**
 	 * Creates a setter for the given field. Uses reflection if the field is
 	 * non-public.
-	 * 
+	 *
 	 * @param f The field to create a setter for
 	 * @return The {@code MethodSpec} for the setter
 	 */
@@ -133,7 +133,7 @@ public class MimicCreator {
 	/**
 	 * Gets a list of all declared and inherited fields with any visibility
 	 * modifier.
-	 * 
+	 *
 	 * @param clazz The class to get fields from
 	 * @return A list of all declared and inherited fields
 	 */

@@ -1,13 +1,13 @@
 [![Maven plugin available on Maven Central](https://img.shields.io/maven-central/v/dev.bodewig.mimic/mimic-maven-plugin?label=Maven%20plugin%20available%20on%20Maven%20Central)](https://central.sonatype.com/artifact/dev.bodewig.mimic/mimic-maven-plugin)
-[![Gradle plugin available on Maven Central](https://img.shields.io/maven-central/v/dev.bodewig.mimic/mimic-gradle-plugin?label=Gradle%20plugin%20available%20on%20Maven%20Central)](https://central.sonatype.com/artifact/dev.bodewig.mimic/mimic-gradle-plugin)
+[![Gradle plugin available on Maven Central](https://img.shields.io/maven-central/v/dev.bodewig.mimic/dev.bodewig.mimic.gradle.plugin?label=Gradle%20plugin%20available%20on%20Maven%20Central)](https://central.sonatype.com/artifact/dev.bodewig.mimic/dev.bodewig.mimic.gradle.plugin)
 
 # Mimic
 
-A mimic is a generated wrapper for an object with non-public fields.
+A Mimic is a generated wrapper for an object with non-public fields.
 It offers type-safe accessors using Java reflection to get and set all object fields.
-This is useful for example to create custom serializers/deserializers for third-party classes.
+This is useful to create custom serializers/deserializers for third-party classes for example.
 
-This repository contains a Maven plugin and a Gradle plugin to generate mimics.
+This repository contains a Maven plugin and a Gradle plugin to generate Mimics.
 
 ## Maven plugin usage
 
@@ -38,8 +38,8 @@ This repository contains a Maven plugin and a Gradle plugin to generate mimics.
 
 | Property | Default | Required | Description |
 | -------- | ------- | -------- | ----------- |
-| classes | | yes | List of fully qualified class names to create mimics for. The classes must be loadable from the compile classpath. |
-| outputDirectory | `${project.build.directory}/generated-sources/mimic` |  | Relative project path where the generated mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
+| classes | | yes | List of fully qualified class names to create Mimics for. The classes must be loadable from the compile classpath. |
+| outputDirectory | `${project.build.directory}/generated-sources/mimic` |  | Relative project path where the generated Mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
 | packageName | | yes | Target package for the generated java classes |
 
 
@@ -47,25 +47,30 @@ This repository contains a Maven plugin and a Gradle plugin to generate mimics.
 
 ```groovy
 plugins {
-	id 'dev.bodewig.mimic.gradle.plugin' version '1.0.0'
+	id 'dev.bodewig.mimic' version '1.0.0'
 }
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
 	classes = ['dev.bodewig.mimic.maven.test.MyTestClass']
-	outputDirectory = 'src/generated/mimic/'
+	outputDirectory = 'build/generated/sources/mimic/'
 }
 ```
 
-Due to limitations in Gradle, you cannot configure classes that are part of the module the mimic plugin is applied to.
-If you need mimics for your own classes, create a separate project module that depends on your other module and applies the plugin.
+Due to limitations in Gradle, you cannot configure classes that are part of the same module the Mimic plugin is applied to (as those classes are not available on the compile classpath).
+If you need Mimics for your own classes, split your project and put the classes in a different module than the one applying the plugin.
+
+If you use the `dev.bodewig.mimic` plugin, the Gradle Java plugin is applied automatically.
+
 
 ### Gradle plugin configuration
 
 | Property | Description |
 | -------- | ----------- |
-| classes | List of fully qualified class names to create mimics for. The classes must be loadable from the compile classpath. |
-| outputDirectory | Relative project path where the generated mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
+| classes | List of fully qualified class names to create Mimics for. The classes must be loadable from the compile classpath. |
+| outputDirectory | Relative project path where the generated Mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
 | packageName | Target package for the generated java classes |
+
+All properties are required, there are no defaults.
 
 
 ## Example
@@ -77,7 +82,8 @@ public class MyTestClass {
 }
 ```
 
-`MyTestClass` has two fields, one public and one private. This is the generated mimic with getter and setter methods for both fields:
+`MyTestClass` has two fields, one public and one private.<br>
+This is the generated Mimic with getter and setter methods for both fields:
 
 ```java
 public class MyTestClassMimic {
@@ -117,7 +123,7 @@ public class MyTestClassMimic {
 }
 ```
 
-Since `count` is a public field, no reflection is needed and the mimic offers type-safe  reflective access to `name`.
+Since `count` is a public field, reflection is not necessary and the Mimic offers type-safe reflective access to `name`.
 
 ```java
 MyTestClass orig = ...

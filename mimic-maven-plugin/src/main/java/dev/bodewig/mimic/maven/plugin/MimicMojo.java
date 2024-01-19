@@ -18,10 +18,10 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import dev.bodewig.mimic.core.MimicCreator;
 
 /**
- * A mimic is a generated wrapper with type-safe accessors using Java reflection
+ * A Mimic is a generated wrapper with type-safe accessors using Java reflection
  * to get and set non-public fields.
  * <p>
- * This plugin creates mimics for a configured list of classes, in a configured
+ * This plugin creates Mimics for a configured list of classes, in a configured
  * package, in a configured output directory.
  */
 @Mojo(name = "mimic", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresDependencyResolution = ResolutionScope.RUNTIME)
@@ -55,7 +55,7 @@ public class MimicMojo extends MimicMojoModel {
 	/**
 	 * Creates a class loader configured with all classes from the compile classpath
 	 * and build output directory
-	 * 
+	 *
 	 * @return The configured class loader
 	 * @throws MojoExecutionException See {@link java.net.URI#toURL() URI.toURL()}
 	 *                                and
@@ -80,7 +80,7 @@ public class MimicMojo extends MimicMojoModel {
 
 	/**
 	 * Load the class with the given name using the given class loader
-	 * 
+	 *
 	 * @param cl        The class loader to use
 	 * @param className The name of the class
 	 * @return The loaded class

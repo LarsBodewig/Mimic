@@ -40,21 +40,21 @@ public abstract class MimicMojoModel extends AbstractMojo {
 	protected BuildPluginManager pluginManager;
 
 	/**
-	 * List of fully qualified class names to create mimics for. The classes must be
+	 * List of fully qualified class names to create Mimics for. The classes must be
 	 * loadable from the compile classpath.
 	 */
 	@Parameter(required = true)
 	protected List<String> classes;
 
 	/**
-	 * Relative project path where the generated mimics are written to. Will be
+	 * Relative project path where the generated Mimics are written to. Will be
 	 * added as a SourceSetDirectory to the main SourceSet.
 	 */
 	@Parameter(defaultValue = "${project.build.directory}/generated-sources/mimic")
 	protected File outputDirectory;
 
 	/**
-	 * The target package of the generated mimics
+	 * The target package of the generated Mimics
 	 */
 	@Parameter(required = true)
 	protected String packageName;
