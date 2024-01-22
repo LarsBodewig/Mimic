@@ -1,5 +1,7 @@
 package dev.bodewig.mimic.gradle.plugin;
 
+import javax.inject.Inject;
+import java.util.concurrent.CompletableFuture;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -19,10 +21,14 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.GradleConnector;
-import org.gradle.tooling.BuildLauncher;
+import org.gradle.tooling.ModelBuilder;
 import org.gradle.tooling.internal.consumer.BlockingResultHandler;
+import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
+import org.gradle.tooling.GradleConnectionException;
+import org.gradle.tooling.ResultHandler;
 
 import dev.bodewig.mimic.core.MimicCreator;
+import dev.bodewig.mimic.gradle.plugin.ResultModel.Builder;
 
 /**
  * A Mimic is a generated wrapper with type-safe accessors using Java reflection
@@ -38,84 +44,82 @@ import dev.bodewig.mimic.core.MimicCreator;
  */
 public abstract class MimicPlugin implements Plugin<Project> {
 
+	private final ToolingModelBuilderRegistry registry;
+
 	/**
 	 * Default constructor
+	 * 
+	 * @param registry injected ToolingModelBuilderRegistry
 	 */
-	public MimicPlugin() {
+	@Inject
+	public MimicPlugin(ToolingModelBuilderRegistry registry) {
+		this.registry = registry;
 	}
 
 	@Override
 	public void apply(Project project) {
-		MimicPluginExtension extension = project.getExtensions().create("mimic", MimicPluginExtension.class);
 		project.getPlugins().apply(JavaPlugin.class);
+		MimicPluginExtension extension = project.getExtensions().create("mimic", MimicPluginExtension.class);
 
-		boolean skipInParameters = Boolean.parseBoolean((String) project.getProperties().get("mimic.skip"));
-		boolean skipInExtension = extension.skip != null && extension.skip.booleanValue();
-		boolean skip = skipInParameters || skipInExtension;
-		if (!skip) {
-			TaskProvider<Task> mimic = project.getTasks().register("mimic", task -> {
-				task.doLast(s -> {
-					s.setGroup("Mimic");
-					s.setDescription("Create Mimics for the configured classes");
-
-					// make outputDirectory
-					File outputDir = new File(project.getProjectDir(), extension.outputDirectory);
-					outputDir.mkdirs();
-
-					Map<String, String> properties = project.getGradle().getStartParameter().getProjectProperties();
-
-					ProjectConnection connection = GradleConnector.newConnector()
-							// .useGradleVersion(project.getGradle().getGradleVersion())
-							.forProjectDirectory(project.getLayout().getProjectDirectory().getAsFile()).connect();
-
-					BlockingResultHandler<Object> handler = new BlockingResultHandler<>(Object.class);
-
-					try {
-						BuildLauncher build = connection.newBuild();
-						for (String key : properties.keySet()) {
-							String param = key;
-							if (!properties.get(key).isEmpty()) {
-								param += "=" + properties.get(key);
-							}
-							System.out.println(param);
-							build = build.addArguments("-P" + param);
-						}
-						build = build.addArguments("-Pmimic.skip=true").forTasks("compileJava");
-						build.run(handler);
-
-						/* Object result = */handler.getResult();
-						// System.out.println(result.toString());
-					} finally {
-						connection.close();
-					}
-					/*
-					 * JavaCompile compiler =
-					 * project.getTasks().withType(JavaCompile.class).iterator().next();
-					 * InputChanges changes = new InputChanges() {
-					 * 
-					 * } compiler.compile(changes);
-					 */
-
-					SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
-					SourceSet main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-
-					// create Mimics
-					try (URLClassLoader cl = createClassLoader(main)) {
-						for (String className : extension.classes) {
-							Class<?> clazz = cl.loadClass(className);
-							MimicCreator.createMimic(clazz, extension.packageName, outputDir);
-						}
-					} catch (ClassNotFoundException | IOException e) {
-						throw new RuntimeException(e);
-					}
-
-					// add outputDirectory as compile source
-					main.getJava().srcDir(extension.outputDirectory);
-				});
-			});
-
-			project.getTasksByName("compileJava", false).forEach(t -> t.dependsOn(mimic));
+		boolean runCollect = Boolean.parseBoolean((String) project.getProperties().get("mimic.collect"));
+		if (runCollect) {
+			registry.register(new ResultModel.Builder());
+		} else {
+			registerMimicTask(project, extension);
 		}
+	}
+
+	private void registerMimicTask(Project project, MimicPluginExtension extension) {
+		TaskProvider<Task> mimic = project.getTasks().register("mimic", task -> {
+			task.setGroup("Mimic");
+			task.setDescription("Create Mimics for the configured classes");
+			task.doLast(s -> {
+				// make outputDirectory
+				File outputDir = new File(project.getProjectDir(), extension.outputDirectory);
+				outputDir.mkdirs();
+
+				Map<String, String> properties = project.getGradle().getStartParameter().getProjectProperties();
+
+				ProjectConnection connection = GradleConnector.newConnector()
+						.forProjectDirectory(project.getLayout().getProjectDirectory().getAsFile()).connect();
+				try {
+					ModelBuilder<ResultModel> build = connection.model(ResultModel.class);
+					for (String key : properties.keySet()) {
+						String param = key;
+						if (!properties.get(key).isEmpty()) {
+							param += "=" + properties.get(key);
+						}
+						// System.out.println(param);
+						build = build.addArguments("-P" + param);
+					}
+					build = build.addArguments("-Pmimic.collect=true").addArguments("--stacktrace")
+							.forTasks("compileJava");
+					ResultModel result = build.get();
+
+					System.out.println(result.test());
+				} finally {
+					connection.close();
+				}
+
+				SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
+				SourceSet main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+
+				// create Mimics
+				try (URLClassLoader cl = createClassLoader(main)) {
+					for (String className : extension.classes) {
+						Class<?> clazz = cl.loadClass(className);
+						MimicCreator.createMimic(clazz, extension.packageName, outputDir);
+					}
+				} catch (ClassNotFoundException | IOException e) {
+					throw new RuntimeException(e);
+				}
+
+				// add outputDirectory as compile source
+				main.getJava().srcDir(extension.outputDirectory);
+			});
+		});
+
+		project.getTasksByName("compileJava", false).forEach(t -> t.dependsOn(mimic));
 	}
 
 	/**

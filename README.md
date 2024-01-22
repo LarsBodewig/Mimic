@@ -58,7 +58,6 @@ mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
 	classes = ['dev.bodewig.mimic.maven.test.MyTestClass']
 	outputDirectory = 'build/generated/sources/mimic/'
-	skip = false // default
 }
 ```
 
