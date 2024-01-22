@@ -12,6 +12,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     gradlePluginPortal()
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 }
 
 java {
@@ -48,6 +49,8 @@ publishing.publications.withType(MavenPublication) { pub ->
 
 dependencies {
     implementation "dev.bodewig.mimic:mimic-core:$version"
+    implementation 'org.gradle:gradle-tooling-api:7.4.2'
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.10'
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

@@ -37,4 +37,9 @@ public class MimicPluginExtension {
 	 * added as a SourceSetDirectory to the main SourceSet.
 	 */
 	public String outputDirectory;
+
+	/**
+	 * Skip the plugin execution (default = false)
+	 */
+	public Boolean skip;
 }
