@@ -25,12 +25,8 @@ gradlePlugin {
     plugins {
         mimic {
             id = 'dev.bodewig.mimic'
-            displayName = 'Mimic Gradle Plugin'
-            description = 'Create reflective accessors for third party classes'
             tags.set(['reflection', 'codegen', 'java', 'wrapper'])
             implementationClass = 'dev.bodewig.mimic.gradle.plugin.MimicPlugin'
-            website = 'https://github.com/LarsBodewig/Mimic'
-            vcsUrl = 'https://github.com/LarsBodewig/Mimic.git'
         }
     }
 }
@@ -44,6 +40,8 @@ publishing.publications.withType(MavenPublication) { pub ->
         parent.appendNode('version', "$version")
         pom.remove(pom.get('groupId'))
         pom.remove(pom.get('version'))
+        pom.appendNode('name', 'Mimic Gradle Plugin')
+        pom.appendNode('description', 'Create reflective accessors for third party classes')
     }
 }
 
