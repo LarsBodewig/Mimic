@@ -46,9 +46,7 @@ publishing.publications.withType(MavenPublication) { pub ->
 }
 
 dependencies {
-    implementation "dev.bodewig.mimic:mimic-core:$version"
-    implementation 'org.gradle:gradle-tooling-api:7.4.2'
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.10'
+    implementation "dev.bodewig.mimic:mimic-generator:$version"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

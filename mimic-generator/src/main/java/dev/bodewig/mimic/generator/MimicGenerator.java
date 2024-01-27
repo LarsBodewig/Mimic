@@ -1,4 +1,4 @@
-package dev.bodewig.mimic.core;
+package dev.bodewig.mimic.generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.Generated;
 import javax.lang.model.element.Modifier;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -17,12 +19,12 @@ import com.squareup.javapoet.TypeSpec;
  * Use {@link #createMimic(Class, String, File)} to create a Mimic for a given
  * class in a configured package in the supplied output directory.
  */
-public class MimicCreator {
+public class MimicGenerator {
 
 	/**
 	 * Default constructor
 	 */
-	private MimicCreator() {
+	private MimicGenerator() {
 	}
 
 	/**
@@ -65,7 +67,9 @@ public class MimicCreator {
 	 */
 	private static TypeSpec createMimicType(Class<?> clazz) {
 		String typeName = clazz.getSimpleName() + "Mimic";
-		TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(typeName).addModifiers(Modifier.PUBLIC);
+		TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(typeName).addModifiers(Modifier.PUBLIC)
+				.addAnnotation(AnnotationSpec.builder(Generated.class)
+						.addMember("value", "$S", MimicGenerator.class.getName()).build());
 
 		typeBuilder.addField(clazz, "instance", Modifier.PRIVATE, Modifier.FINAL);
 		MethodSpec constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)

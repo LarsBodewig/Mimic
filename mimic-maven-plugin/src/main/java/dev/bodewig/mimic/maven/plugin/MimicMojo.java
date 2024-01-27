@@ -15,7 +15,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import dev.bodewig.mimic.core.MimicCreator;
+import dev.bodewig.mimic.generator.MimicGenerator;
 
 /**
  * A Mimic is a generated wrapper with type-safe accessors using Java reflection
@@ -41,7 +41,7 @@ public class MimicMojo extends MimicMojoModel {
 			for (String className : classes) {
 				Class<?> clazz = loadClass(cl, className);
 				try {
-					MimicCreator.createMimic(clazz, packageName, outputDirectory);
+					MimicGenerator.createMimic(clazz, packageName, outputDirectory);
 				} catch (IOException e) {
 					throw new MojoExecutionException("Could not write file to " + outputDirectory, e);
 				}

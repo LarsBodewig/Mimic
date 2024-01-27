@@ -10,10 +10,10 @@
 		<artifactId>mimic-parent</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>mimic-core</artifactId>
+	<artifactId>mimic-generator</artifactId>
 
-	<name>Mimic core</name>
-	<description>Core functionality to create Mimics</description>
+	<name>Mimic Generator</name>
+	<description>Generator to create Mimics</description>
 
 	<dependencies>
 		<dependency>
@@ -22,22 +22,4 @@
 			<version>1.13.0</version>
 		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
