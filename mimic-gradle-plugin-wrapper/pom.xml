@@ -24,8 +24,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>dev.bodewig.mimic</groupId>
-			<artifactId>mimic-core</artifactId>
+			<artifactId>mimic-annotation-processor</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.gradleplugins</groupId>
+			<artifactId>gradle-api</artifactId>
+			<version>8.4</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

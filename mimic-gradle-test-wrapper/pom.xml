@@ -22,14 +22,6 @@
 			<groupId>dev.bodewig.mimic</groupId>
 			<artifactId>mimic-gradle-plugin-wrapper</artifactId>
 			<version>${project.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>dev.bodewig.mimic</groupId>
-			<artifactId>mimic-maven-test</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

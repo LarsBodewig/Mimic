@@ -20,6 +20,9 @@
 
 	<modules>
 		<module>mimic-core</module>
+		<module>mimic-annotation</module>
+		<module>mimic-annotation-processor</module>
+		<module>mimic-annotation-test</module>
 		<module>mimic-maven-plugin</module>
 		<module>mimic-maven-test</module>
 		<module>mimic-gradle-plugin-wrapper</module>
@@ -141,4 +144,12 @@
 			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>gradle-local</id>
+			<name>Gradle Local</name>
+			<url>https://repo.gradle.org/gradle/libs-releases-local/</url>
+		</repository>
+	</repositories>
 </project>
