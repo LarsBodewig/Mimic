@@ -41,7 +41,7 @@ public class MimicMojo extends MimicMojoModel {
 			for (String className : classes) {
 				Class<?> clazz = loadClass(cl, className);
 				try {
-					MimicGenerator.createMimic(clazz, packageName, outputDirectory);
+					MimicGenerator.createMimicFromClass(clazz, packageName, outputDirectory);
 				} catch (IOException e) {
 					throw new MojoExecutionException("Could not write file to " + outputDirectory, e);
 				}

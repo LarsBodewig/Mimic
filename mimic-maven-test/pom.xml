@@ -15,9 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.9.1</version>
-			<scope>test</scope>
+			<artifactId>junit-jupiter</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -35,6 +33,8 @@
 						<configuration>
 							<classes>
 								<class>dev.bodewig.mimic.maven.test.MyTestClass</class>
+								<!--class>org.junit.jupiter.api.extension.ConditionEvaluationResult</class>
+								<class>org.junit.jupiter.api.condition.JRE</class-->
 							</classes>
 							<packageName>dev.bodewig.mimic.maven.test.generated</packageName>
 						</configuration>

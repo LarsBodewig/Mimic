@@ -46,11 +46,6 @@ This repository contains a Maven plugin and a Gradle plugin to generate Mimics.
 ## Gradle plugin usage (groovy)
 
 ```groovy
-pluginManagement {
-	repositories {
-		maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-	}
-}
 plugins {
 	id 'dev.bodewig.mimic' version '1.0.0'
 }

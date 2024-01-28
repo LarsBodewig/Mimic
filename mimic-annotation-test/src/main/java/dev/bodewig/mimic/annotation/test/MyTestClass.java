@@ -3,7 +3,7 @@ package dev.bodewig.mimic.annotation.test;
 import dev.bodewig.mimic.annotation.Mimic;
 
 @SuppressWarnings("unused")
-@Mimic
+@Mimic(packageName = "dev.bodewig.mimic.annotation.test.generated")
 public class MyTestClass {
 
 	public int count = 1;

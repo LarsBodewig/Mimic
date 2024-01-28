@@ -2,13 +2,13 @@ package dev.bodewig.mimic.generator;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.AccessibleObject;
+import java.io.Writer;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.processing.Generated;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
@@ -16,8 +16,8 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 /**
- * Use {@link #createMimic(Class, String, File)} to create a Mimic for a given
- * class in a configured package in the supplied output directory.
+ * Use {@link #createMimicFromClass(Class, String, File)} to create a Mimic for
+ * a given class in a configured package in the supplied output directory.
  */
 public class MimicGenerator {
 
@@ -40,10 +40,45 @@ public class MimicGenerator {
 	 * @throws IOException If writing the java class file to the output directory
 	 *                     fails
 	 */
-	public static void createMimic(Class<?> clazz, String packageName, File outputDirectory) throws IOException {
-		TypeSpec type = createMimicType(clazz);
-		JavaFile javaFile = JavaFile.builder(packageName, type).build();
+	public static void createMimicFromClass(Class<?> clazz, String packageName, File outputDirectory)
+			throws IOException {
+		ModelAdapter<Class<?>> model = ModelAdapter.fromClass(clazz);
+		TypeSpec spec = createMimicType(model);
+		JavaFile javaFile = JavaFile.builder(packageName, spec).build();
 		javaFile.writeTo(outputDirectory);
+	}
+
+	/**
+	 * 
+	 * @param type
+	 * @param packageName
+	 * @param outputFile
+	 * @throws IOException
+	 */
+	public static void createMimicFromType(TypeElement type, String packageName, Writer outputFile) throws IOException {
+		ModelAdapter<Element> model = ModelAdapter.fromType(type);
+		TypeSpec spec = createMimicType(model);
+		JavaFile javaFile = JavaFile.builder(packageName, spec).build();
+		javaFile.writeTo(outputFile);
+	}
+
+	/**
+	 * 
+	 * @param pkg
+	 * @param simpleName
+	 * @return
+	 */
+	public static String buildQualifiedMimicName(String pkg, String simpleName) {
+		return pkg + "." + buildSimpleMimicName(simpleName);
+	}
+
+	/**
+	 * 
+	 * @param simpleName
+	 * @return
+	 */
+	public static String buildSimpleMimicName(String simpleName) {
+		return simpleName + "Mimic";
 	}
 
 	/**
@@ -65,18 +100,18 @@ public class MimicGenerator {
 	 * @param clazz The class to create a Mimic for
 	 * @return The {@code TypeSpec} for the Mimic
 	 */
-	private static TypeSpec createMimicType(Class<?> clazz) {
-		String typeName = clazz.getSimpleName() + "Mimic";
+	private static TypeSpec createMimicType(ModelAdapter<?> model) {
+		String typeName = buildSimpleMimicName(model.getSimpleName());
 		TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(typeName).addModifiers(Modifier.PUBLIC)
 				.addAnnotation(AnnotationSpec.builder(Generated.class)
 						.addMember("value", "$S", MimicGenerator.class.getName()).build());
 
-		typeBuilder.addField(clazz, "instance", Modifier.PRIVATE, Modifier.FINAL);
+		typeBuilder.addField(model.getTypeName(), "instance", Modifier.PRIVATE, Modifier.FINAL);
 		MethodSpec constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
-				.addParameter(clazz, "instance").addStatement("this.instance = instance").build();
+				.addParameter(model.getTypeName(), "instance").addStatement("this.instance = instance").build();
 		typeBuilder.addMethod(constructor);
 
-		for (Field f : getFields(clazz)) {
+		for (FieldAdapter<?> f : model.getFields()) {
 			MethodSpec getter = createGetter(f);
 			MethodSpec setter = createSetter(f);
 			typeBuilder.addMethod(getter);
@@ -93,11 +128,11 @@ public class MimicGenerator {
 	 * @param f The field to create a getter for
 	 * @return The {@code MethodSpec} for the getter
 	 */
-	private static MethodSpec createGetter(Field f) {
+	private static MethodSpec createGetter(FieldAdapter<?> f) {
 		String getterName = "get" + pascalCase(f.getName());
 		MethodSpec.Builder getterBuilder = MethodSpec.methodBuilder(getterName).addModifiers(Modifier.PUBLIC)
 				.returns(f.getType());
-		if (java.lang.reflect.Modifier.isPublic(f.getModifiers())) {
+		if (f.isPublic()) {
 			getterBuilder.addStatement("return instance.$L", f.getName());
 		} else {
 			getterBuilder.beginControlFlow("try")
@@ -117,11 +152,11 @@ public class MimicGenerator {
 	 * @param f The field to create a setter for
 	 * @return The {@code MethodSpec} for the setter
 	 */
-	private static MethodSpec createSetter(Field f) {
+	private static MethodSpec createSetter(FieldAdapter<?> f) {
 		String setterName = "set" + pascalCase(f.getName());
 		MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(setterName).addModifiers(Modifier.PUBLIC)
 				.addParameter(f.getType(), "value");
-		if (java.lang.reflect.Modifier.isPublic(f.getModifiers())) {
+		if (f.isPublic()) {
 			setterBuilder.addStatement("instance.$L = value", f.getName());
 		} else {
 			setterBuilder.beginControlFlow("try")
@@ -132,23 +167,5 @@ public class MimicGenerator {
 					.addStatement("throw new $T(e)", RuntimeException.class).endControlFlow();
 		}
 		return setterBuilder.build();
-	}
-
-	/**
-	 * Gets a list of all declared and inherited fields with any visibility
-	 * modifier.
-	 *
-	 * @param clazz The class to get fields from
-	 * @return A list of all declared and inherited fields
-	 */
-	private static List<Field> getFields(Class<?> clazz) {
-		Field[] ownFields = clazz.getDeclaredFields();
-		AccessibleObject.setAccessible(ownFields, true);
-		List<Field> fields = new ArrayList<>();
-		fields.addAll(List.of(ownFields));
-		if (clazz.getSuperclass() != null) {
-			fields.addAll(getFields(clazz.getSuperclass()));
-		}
-		return fields;
 	}
 }

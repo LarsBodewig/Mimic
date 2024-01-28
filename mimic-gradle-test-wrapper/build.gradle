@@ -16,8 +16,11 @@ java {
 
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
-	classes = ['dev.bodewig.mimic.maven.test.MyTestClass']
-	outputDirectory = 'build/generated/sources/mimic/'
+	classes = [
+		'dev.bodewig.mimic.maven.test.MyTestClass'
+		//, 'org.junit.jupiter.api.extension.ConditionEvaluationResult'
+		//, 'org.junit.jupiter.api.condition.JRE'
+	]
 }
 
 tasks.named('test', Test) {
@@ -28,15 +31,10 @@ tasks.named('test', Test) {
 }
 
 dependencies {
-    compileOnly "dev.bodewig.mimic:mimic-maven-test:$version"
-    testImplementation "dev.bodewig.mimic:mimic-maven-test:$version"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.1'
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.test.java.srcDirs = [ "test/" ]
 
 eclipse.project.name = "$name"
