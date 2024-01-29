@@ -16,11 +16,7 @@ java {
 
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
-	classes = [
-		'dev.bodewig.mimic.maven.test.MyTestClass'
-		//, 'org.junit.jupiter.api.extension.ConditionEvaluationResult'
-		//, 'org.junit.jupiter.api.condition.JRE'
-	]
+	classes = ['dev.bodewig.mimic.gradle.test.MyTestClass']
 }
 
 tasks.named('test', Test) {

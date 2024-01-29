@@ -37,6 +37,7 @@ public class MimicMojo extends MimicMojoModel {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		outputDirectory.mkdirs();
+
 		try (URLClassLoader cl = createClassLoader()) {
 			for (String className : classes) {
 				Class<?> clazz = loadClass(cl, className);

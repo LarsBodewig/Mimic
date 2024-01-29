@@ -1,7 +1,7 @@
 package dev.bodewig.mimic.maven.plugin;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -44,7 +44,7 @@ public abstract class MimicMojoModel extends AbstractMojo {
 	 * loadable from the compile classpath.
 	 */
 	@Parameter(required = true)
-	protected List<String> classes;
+	protected Set<String> classes;
 
 	/**
 	 * Relative project path where the generated Mimics are written to. Will be

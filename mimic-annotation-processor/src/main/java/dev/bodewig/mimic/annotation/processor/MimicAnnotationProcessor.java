@@ -33,40 +33,41 @@ import dev.bodewig.mimic.generator.MimicGenerator;
 public class MimicAnnotationProcessor extends AbstractProcessor {
 
 	/**
-	 * 
+	 * The option name to pass a default package name for the created Mimics
 	 */
 	public static final String OPTION_PACKAGE_NAME = "mimic.packageName";
 
 	/**
-	 * 
+	 * The option name to pass a list of class names to create Mimics for
 	 */
 	public static final String OPTION_MIMIC_CLASSES = "mimic.classes";
 
-	protected Set<String> classes;
-
-	protected String packageName;
-
 	/**
-	 * 
+	 * Already processed classes.
+	 * <p>
+	 * This is necessary since Gradle calls the
+	 * {@link #process(Set, RoundEnvironment)} method twice.
 	 */
+	protected Set<TypeElement> processed;
+
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
 		super.init(processingEnv);
+		processed = new HashSet<>();
+	}
+
+	@Override
+	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		String classList = processingEnv.getOptions().get(OPTION_MIMIC_CLASSES);
+		Set<String> classes = null;
 		if (classList == null || classList.isBlank()) {
 			classes = Collections.emptySet();
 		} else {
 			String[] classArray = classList.split(",");
 			classes = Set.of(classArray);
 		}
-		packageName = processingEnv.getOptions().get(OPTION_PACKAGE_NAME);
-	}
+		String packageName = processingEnv.getOptions().get(OPTION_PACKAGE_NAME);
 
-	/**
-	 * 
-	 */
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		Elements util = processingEnv.getElementUtils();
 
 		Set<TypeElement> annotated = roundEnv.getElementsAnnotatedWith(Mimic.class).stream().map(c -> (TypeElement) c)
@@ -84,6 +85,8 @@ public class MimicAnnotationProcessor extends AbstractProcessor {
 
 		Set<TypeElement> combined = new HashSet<>(annotated);
 		combined.addAll(configured);
+		combined.removeAll(processed);
+		processed.addAll(combined);
 
 		String name = null;
 		try {

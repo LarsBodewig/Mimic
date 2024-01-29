@@ -45,7 +45,7 @@ publishing.publications.withType(MavenPublication) { pub ->
 }
 
 dependencies {
-    implementation "dev.bodewig.mimic:mimic-generator:$version"
+    implementation "dev.bodewig.mimic:mimic-annotation-processor:$version"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

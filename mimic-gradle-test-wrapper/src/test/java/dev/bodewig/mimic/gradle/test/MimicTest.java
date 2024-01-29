@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import dev.bodewig.mimic.maven.test.MyTestClass;
 import dev.bodewig.mimic.gradle.test.generated.MyTestClassMimic;
 
 class MimicTest {

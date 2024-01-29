@@ -22,6 +22,7 @@
 			<groupId>dev.bodewig.mimic</groupId>
 			<artifactId>mimic-gradle-plugin-wrapper</artifactId>
 			<version>${project.version}</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 
@@ -60,6 +61,7 @@
 								<argument>-PgroupId=${project.groupId}</argument>
 								<argument>-PartifactId=${gradle-test-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
+								<argument>--stacktrace</argument>
 							</arguments>
 						</configuration>
 					</execution>
