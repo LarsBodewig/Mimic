@@ -18,12 +18,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>dev.bodewig.mimic</groupId>
-			<artifactId>mimic-generator</artifactId>
+			<artifactId>mimic-annotation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.bodewig.mimic</groupId>
-			<artifactId>mimic-annotation</artifactId>
+			<artifactId>mimic-generator</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

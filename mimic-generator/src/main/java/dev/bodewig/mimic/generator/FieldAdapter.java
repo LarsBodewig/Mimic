@@ -8,28 +8,77 @@ import javax.lang.model.element.VariableElement;
 
 import com.squareup.javapoet.TypeName;
 
+/**
+ * Adapter to delegate operations to a {@link FieldFieldAdapter} or
+ * {@link VariableFieldAdapter}
+ *
+ * @param <T> The return type of {@link #getDeclaringClass()}
+ */
 public interface FieldAdapter<T> {
 
+	/**
+	 * Returns the field's name
+	 *
+	 * @return The field's name
+	 */
 	String getName();
 
+	/**
+	 * Return the field's {@link TypeName}
+	 *
+	 * @return The field's {@link TypeName}
+	 */
 	TypeName getType();
 
+	/**
+	 * Returns if the field is public
+	 *
+	 * @return If the field is public
+	 */
 	boolean isPublic();
 
+	/**
+	 * Returns the class declaring the field
+	 *
+	 * @return The declaring class
+	 */
 	T getDeclaringClass();
 
+	/**
+	 * Static initializer for a {@link Field} instance
+	 *
+	 * @param field The {@code field} instance
+	 * @return A {@code FieldAdapter} with the {@code field} instance
+	 */
 	static FieldAdapter<Class<?>> from(Field field) {
 		return new FieldFieldAdapter(field);
 	}
 
+	/**
+	 * Static initializer for a {@link VariableElement} instance
+	 *
+	 * @param field The field instance
+	 * @return A {@code FieldAdapter} with the {@code variable} instance
+	 */
 	static FieldAdapter<Element> from(VariableElement variable) {
 		return new VariableFieldAdapter(variable);
 	}
 
+	/**
+	 * {@link FieldAdapter} for a {@link Field} instance
+	 */
 	class FieldFieldAdapter implements FieldAdapter<Class<?>> {
 
+		/**
+		 * The {@code Field} instance
+		 */
 		protected final Field field;
 
+		/**
+		 * Constructor with a {@code Field} instance
+		 *
+		 * @param field The {@code Field} instance
+		 */
 		public FieldFieldAdapter(Field field) {
 			this.field = field;
 		}
@@ -53,17 +102,28 @@ public interface FieldAdapter<T> {
 		public Class<?> getDeclaringClass() {
 			return field.getDeclaringClass();
 		}
-		
+
 		@Override
 		public String toString() {
 			return "FieldFieldAdapter(" + field.getName() + ")";
 		}
 	}
 
+	/**
+	 * {@link FieldAdapter} for a {@link VariableElement} instance
+	 */
 	class VariableFieldAdapter implements FieldAdapter<Element> {
 
+		/**
+		 * The {@code VariableElement} instance
+		 */
 		protected final VariableElement variable;
 
+		/**
+		 * Constructor with a {@code VariableElement} instance
+		 *
+		 * @param field The {@code VariableElement} instance
+		 */
 		public VariableFieldAdapter(VariableElement variable) {
 			this.variable = variable;
 		}
@@ -87,7 +147,7 @@ public interface FieldAdapter<T> {
 		public Element getDeclaringClass() {
 			return variable.getEnclosingElement();
 		}
-		
+
 		@Override
 		public String toString() {
 			return "VariableFieldAdapter(" + variable.getSimpleName() + ")";
