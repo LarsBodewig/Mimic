@@ -26,7 +26,7 @@ import dev.bodewig.mimic.annotation.processor.MimicAnnotationProcessor;
  * dependency.
  * <p>
  * Use the DSL extension to configure the annotation processor:
- * 
+ *
  * <pre>
  * mimic {
  *   packageName = 'my.default.target.package'
@@ -36,7 +36,7 @@ import dev.bodewig.mimic.annotation.processor.MimicAnnotationProcessor;
  *   ]
  * }
  * </pre>
- * 
+ *
  * The generated classes are written in Java.
  */
 public abstract class MimicPlugin implements Plugin<Project> {

@@ -49,11 +49,17 @@ public class MimicGenerator {
 	}
 
 	/**
-	 * 
-	 * @param type
-	 * @param packageName
-	 * @param outputFile
-	 * @throws IOException
+	 * Creates a Mimic for the given type in a given package and writes to the given
+	 * output file.
+	 * <p>
+	 * A Mimic is a generated wrapper with type-safe accessors using Java reflection
+	 * to get and set non-public fields.
+	 *
+	 * @param type        The type to create a Mimic for
+	 * @param packageName The target package for the generated Mimic
+	 * @param outputFile  The output file to the java class
+	 * @throws IOException If writing the java class file to the output directory
+	 *                     fails
 	 */
 	public static void createMimicFromType(TypeElement type, String packageName, Writer outputFile) throws IOException {
 		ModelAdapter<Element> model = ModelAdapter.fromType(type);
@@ -63,19 +69,21 @@ public class MimicGenerator {
 	}
 
 	/**
-	 * 
-	 * @param pkg
-	 * @param simpleName
-	 * @return
+	 * Builds a qualified class name for the Mimic
+	 *
+	 * @param pkg        The package for the Mimic
+	 * @param simpleName The class name to create a Mimic for
+	 * @return The qualified class name
 	 */
 	public static String buildQualifiedMimicName(String pkg, String simpleName) {
 		return pkg + "." + buildSimpleMimicName(simpleName);
 	}
 
 	/**
-	 * 
-	 * @param simpleName
-	 * @return
+	 * Builds a simple class name for the Mimic
+	 *
+	 * @param simpleName The class name to create a Mimic for
+	 * @return The simple class name
 	 */
 	public static String buildSimpleMimicName(String simpleName) {
 		return simpleName + "Mimic";

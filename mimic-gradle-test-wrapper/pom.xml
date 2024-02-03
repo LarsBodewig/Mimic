@@ -61,7 +61,6 @@
 								<argument>-PgroupId=${project.groupId}</argument>
 								<argument>-PartifactId=${gradle-test-artifactId}</argument>
 								<argument>-Pversion=${project.version}</argument>
-								<argument>--stacktrace</argument>
 							</arguments>
 						</configuration>
 					</execution>

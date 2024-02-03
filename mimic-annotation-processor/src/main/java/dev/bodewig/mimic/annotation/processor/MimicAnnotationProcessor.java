@@ -25,7 +25,7 @@ import dev.bodewig.mimic.generator.MimicGenerator;
 
 /**
  * Generator to create Mimics for annotated and configured classes via
- * compilerArgs
+ * {@code compilerArgs}
  */
 @SupportedOptions({ MimicAnnotationProcessor.OPTION_PACKAGE_NAME, MimicAnnotationProcessor.OPTION_MIMIC_CLASSES })
 @SupportedAnnotationTypes("*")
@@ -43,7 +43,7 @@ public class MimicAnnotationProcessor extends AbstractProcessor {
 	public static final String OPTION_MIMIC_CLASSES = "mimic.classes";
 
 	/**
-	 * Already processed classes.
+	 * Already processed classes
 	 * <p>
 	 * This is necessary since Gradle calls the
 	 * {@link #process(Set, RoundEnvironment)} method twice.

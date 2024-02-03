@@ -40,7 +40,6 @@
 					<compilerArgs>
 						<arg>
 							-Amimic.packageName=dev.bodewig.mimic.annotation.test.generated.lang</arg>
-						<!--arg>-Amimic.classes=org.junit.jupiter.api.extension.ConditionEvaluationResult,org.junit.jupiter.api.condition.JRE</arg-->
 					</compilerArgs>
 				</configuration>
 			</plugin>

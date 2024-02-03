@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import dev.bodewig.mimic.annotation.test.MyTestClass;
 import dev.bodewig.mimic.annotation.test.generated.MyTestClassMimic;
 
 class MimicTest {

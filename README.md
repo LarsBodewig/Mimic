@@ -5,9 +5,9 @@
 
 A Mimic is a generated wrapper for an object with non-public fields.
 It offers type-safe accessors using Java reflection to get and set all object fields.
-This is useful to create custom serializers/deserializers for third-party classes for example.
+This is useful to create custom serializers/deserializers for third-party classes or unit tests for example.
 
-This repository contains a Maven plugin and a Gradle plugin to generate Mimics.
+This repository contains a generic Annotation processor to create Mimics, and Maven and Gradle plugins for more comfort.
 
 ## Maven plugin usage
 
@@ -15,7 +15,7 @@ This repository contains a Maven plugin and a Gradle plugin to generate Mimics.
 <plugin>
 	<groupId>dev.bodewig.mimic</groupId>
 	<artifactId>mimic-maven-plugin</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<executions>
 		<execution>
 			<goals>
@@ -39,28 +39,26 @@ This repository contains a Maven plugin and a Gradle plugin to generate Mimics.
 | Property | Default | Required | Description |
 | -------- | ------- | -------- | ----------- |
 | classes | | yes | List of fully qualified class names to create Mimics for. The classes must be loadable from the compile classpath. |
-| outputDirectory | `${project.build.directory}/generated-sources/mimic` |  | Relative project path where the generated Mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
+| outputDirectory | `${project.build.directory}/generated-sources/mimic` |  | Relative project path where the generated Mimics are written to. Will be added as additional compile source directory. |
 | packageName | | yes | Target package for the generated java classes |
 
 
 ## Gradle plugin usage (groovy)
 
+Add the Mimic Annotation to your own class or configure third party classes via the plugin extension DSL.
+Each Mimic Annotation can be parameterized with a package name, the configured package name in the plugin extension is used as a fallback.
+
 ```groovy
 plugins {
-	id 'dev.bodewig.mimic' version '1.0.0'
+	id 'dev.bodewig.mimic' version '1.1.0'
 }
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
 	classes = ['dev.bodewig.mimic.maven.test.MyTestClass']
-	outputDirectory = 'build/generated/sources/mimic/'
 }
 ```
 
-Due to limitations in Gradle, you cannot configure classes that are part of the same module the Mimic plugin is applied to (as those classes are not available on the compile classpath).
-If you need Mimics for your own classes, split your project and put the classes in a different module than the one applying the plugin.
-
 If you use the `dev.bodewig.mimic` plugin, the Gradle Java plugin is applied automatically.
-
 
 ### Gradle plugin configuration
 
@@ -68,17 +66,58 @@ If you use the `dev.bodewig.mimic` plugin, the Gradle Java plugin is applied aut
 | -------- | ----------- |
 | classes | List of fully qualified class names to create Mimics for. The classes must be loadable from the compile classpath. |
 | outputDirectory | Relative project path where the generated Mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
-| packageName | Target package for the generated java classes |
+| packageName | The default target package for the generated java classes, fallback if no annotation with parameter is present |
 
 All properties are required, there are no defaults.
+
+
+## Annotation processor usage
+
+Add the Mimic Annotation to your own class or configure third party classes via compileArgs.
+Each Mimic Annotation can be parameterized with a package name, the configured package name in the compileArgs is used as a fallback.
+
+The annotation processor can be used with multiple build tools, e.g. with Maven:
+
+```xml
+<dependency>
+	<groupId>dev.bodewig.mimic</groupId>
+	<artifactId>mimic-annotation</artifactId>
+	<version>1.1.0</version>
+</dependency>
+...
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+		<annotationProcessorPaths>
+			<path>
+				<groupId>dev.bodewig.mimic</groupId>
+				<artifactId>mimic-annotation-processor</artifactId>
+				<version>1.1.0</version>
+			</path>
+		</annotationProcessorPaths>
+		<compilerArgs>
+			<arg>-Amimic.packageName=dev.bodewig.mimic.annotation.test.generated.lang</arg>
+			<arg>-Amimic.classes=my.test.class.One,my.test.class.Two</arg>
+		</compilerArgs>
+	</configuration>
+</plugin>
+```
+
+### Annotation processor configuration
+
+| CompilerArg | Description |
+| ----------- | ----------- |
+| mimic.classes | Comma-separated list of fully qualified class names to create Mimics for |
+| mimic.packageName | The default target package for the generated java classes, fallback if no annotation with parameter is present |
 
 
 ## Example
 
 ```java
 public class MyTestClass {
-	public int count = 1;
-	private String name = "test";
+  public int count = 1;
+  private String name = "test";
 }
 ```
 

@@ -16,26 +16,70 @@ import javax.lang.model.type.TypeKind;
 
 import com.squareup.javapoet.TypeName;
 
+/**
+ * Adapter to delegate operations to a {@link ClassModelAdapter} or
+ * {@link TypeModelAdapter}
+ *
+ * @param <T> The return type of {@link FieldAdapter#getDeclaringClass()}
+ */
 public interface ModelAdapter<T> {
 
+	/**
+	 * Returns the model's simple name
+	 *
+	 * @return The model's simple name
+	 */
+	String getSimpleName();
+
+	/**
+	 * Returns the model's {@link TypeName}
+	 *
+	 * @return The model's {@link TypeName}
+	 */
+	TypeName getTypeName();
+
+	/**
+	 * Returns the model's fields as a {@code Set} of {@link FieldAdapter}s
+	 *
+	 * @return The model's fields
+	 */
+	Set<FieldAdapter<T>> getFields();
+
+	/**
+	 * Static initializer for a {@link Class} instance
+	 *
+	 * @param clazz The {@code Class} instance
+	 * @return A {@code ModelAdapter} with the {@code class} instance
+	 */
 	static ModelAdapter<Class<?>> fromClass(Class<?> clazz) {
 		return new ClassModelAdapter(clazz);
 	}
 
+	/**
+	 * Static initializer for a {@link TypeElement} instance
+	 *
+	 * @param type The {@code TypeElement} instance
+	 * @return A {@code ModelAdapter} with the {@code type} instance
+	 */
 	static ModelAdapter<Element> fromType(TypeElement type) {
 		return new TypeModelAdapter(type);
 	}
 
-	String getSimpleName();
-
-	TypeName getTypeName();
-
-	Set<FieldAdapter<T>> getFields();
-
+	/**
+	 * {@link ModelAdapter} for a {@link Class} instance
+	 */
 	class ClassModelAdapter implements ModelAdapter<Class<?>> {
 
+		/**
+		 * The {@code Class} instance
+		 */
 		protected final Class<?> clazz;
 
+		/**
+		 * Constructor with a {@code Class} instance
+		 *
+		 * @param clazz The {@code Class} instance
+		 */
 		public ClassModelAdapter(Class<?> clazz) {
 			this.clazz = clazz;
 		}
@@ -72,10 +116,21 @@ public interface ModelAdapter<T> {
 		}
 	}
 
+	/**
+	 * {@link ModelAdapter} for an {@link Element} instance
+	 */
 	class TypeModelAdapter implements ModelAdapter<Element> {
 
+		/**
+		 * The {@code TypeElement} instance
+		 */
 		protected final TypeElement type;
 
+		/**
+		 * Constructor with a {@code TypeElement} instance
+		 *
+		 * @param type The {@code TypeElement} instance
+		 */
 		public TypeModelAdapter(TypeElement type) {
 			this.type = type;
 		}
