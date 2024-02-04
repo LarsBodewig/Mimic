@@ -120,10 +120,12 @@ public class MimicGenerator {
 		typeBuilder.addMethod(constructor);
 
 		for (FieldAdapter<?> f : model.getFields()) {
-			MethodSpec getter = createGetter(f);
-			MethodSpec setter = createSetter(f);
-			typeBuilder.addMethod(getter);
-			typeBuilder.addMethod(setter);
+			if (!f.isConstant()) {
+				MethodSpec getter = createGetter(f);
+				MethodSpec setter = createSetter(f);
+				typeBuilder.addMethod(getter);
+				typeBuilder.addMethod(setter);
+			}
 		}
 
 		return typeBuilder.build();
@@ -164,7 +166,7 @@ public class MimicGenerator {
 		String setterName = "set" + pascalCase(f.getName());
 		MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(setterName).addModifiers(Modifier.PUBLIC)
 				.addParameter(f.getType(), "value");
-		if (f.isPublic()) {
+		if (f.isPublic() && !f.isFinal()) {
 			setterBuilder.addStatement("instance.$L = value", f.getName());
 		} else {
 			setterBuilder.beginControlFlow("try")
