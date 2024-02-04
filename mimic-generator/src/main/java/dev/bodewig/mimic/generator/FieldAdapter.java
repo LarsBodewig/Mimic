@@ -38,6 +38,20 @@ public interface FieldAdapter<T> {
 	boolean isPublic();
 
 	/**
+	 * Returns if the field is final
+	 *
+	 * @return If the field is final
+	 */
+	boolean isFinal();
+
+	/**
+	 * Returns if the field is a constant
+	 *
+	 * @return If the field is a constant
+	 */
+	boolean isConstant();
+
+	/**
 	 * Returns the class declaring the field
 	 *
 	 * @return The declaring class
@@ -99,6 +113,16 @@ public interface FieldAdapter<T> {
 		}
 
 		@Override
+		public boolean isFinal() {
+			return Modifier.isFinal(field.getModifiers());
+		}
+
+		@Override
+		public boolean isConstant() {
+			return Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers());
+		}
+
+		@Override
 		public Class<?> getDeclaringClass() {
 			return field.getDeclaringClass();
 		}
@@ -141,6 +165,17 @@ public interface FieldAdapter<T> {
 		@Override
 		public boolean isPublic() {
 			return variable.getModifiers().contains(javax.lang.model.element.Modifier.PUBLIC);
+		}
+
+		@Override
+		public boolean isFinal() {
+			return variable.getModifiers().contains(javax.lang.model.element.Modifier.FINAL);
+		}
+
+		@Override
+		public boolean isConstant() {
+			return variable.getModifiers().contains(javax.lang.model.element.Modifier.STATIC)
+					&& variable.getModifiers().contains(javax.lang.model.element.Modifier.FINAL);
 		}
 
 		@Override
