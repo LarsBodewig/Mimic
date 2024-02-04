@@ -1,5 +1,6 @@
 package dev.bodewig.mimic.gradle.plugin;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,8 @@ public abstract class MimicPlugin implements Plugin<Project> {
 
 	private static final String ARTIFACT_ID_ANNOTATION_PROCESSOR = "mimic-annotation-processor";
 
+	private static final String MIMIC_VERSION_RESOURCE = "/mimic.version";
+
 	/**
 	 * The name of the plugin DSL extension
 	 */
@@ -68,11 +71,14 @@ public abstract class MimicPlugin implements Plugin<Project> {
 		project.getPlugins().apply(JavaPlugin.class);
 		MimicPluginExtension extension = project.getExtensions().create(EXTENSION_NAME, MimicPluginExtension.class);
 
-		// add mimic-annotation as compile dependency
 		SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
 		SourceSet main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+		URL versionResource = MimicPlugin.class.getResource(MIMIC_VERSION_RESOURCE);
+		String mimicVersion = project.getResources().getText().fromUri(versionResource).asString();
+
+		// add mimic-annotation as compile dependency
 		Dependency annotationDependency = project.getDependencies()
-				.create(GROUP_ID + ":" + ARTIFACT_ID_ANNOTATION + ":" + project.getVersion());
+				.create(GROUP_ID + ":" + ARTIFACT_ID_ANNOTATION + ":" + mimicVersion);
 		Configuration annotationConfig = project.getConfigurations().create(ARTIFACT_ID_ANNOTATION);
 		annotationConfig.defaultDependencies(dependencySet -> dependencySet.add(annotationDependency));
 		Configuration mainCompileOnlyConfig = project.getConfigurations()
@@ -82,7 +88,7 @@ public abstract class MimicPlugin implements Plugin<Project> {
 		// add mimic-annotation-processor as annotation processor dependency
 		Configuration processorConfig = project.getConfigurations().create(ARTIFACT_ID_ANNOTATION_PROCESSOR);
 		Dependency processorDependency = project.getDependencies()
-				.create(GROUP_ID + ":" + ARTIFACT_ID_ANNOTATION_PROCESSOR + ":" + project.getVersion());
+				.create(GROUP_ID + ":" + ARTIFACT_ID_ANNOTATION_PROCESSOR + ":" + mimicVersion);
 		processorConfig.defaultDependencies(dependencySet -> dependencySet.add(processorDependency));
 		Configuration mainProcessorConfig = project.getConfigurations()
 				.getByName(main.getAnnotationProcessorConfigurationName());

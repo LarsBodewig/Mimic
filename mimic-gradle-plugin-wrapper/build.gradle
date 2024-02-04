@@ -14,6 +14,13 @@ repositories {
     gradlePluginPortal()
 }
 
+processResources {
+    def resourcesDir = sourceSets.main.output.resourcesDir
+    resourcesDir.mkdirs()
+    def contents = "$version"
+    new File(resourcesDir, "mimic.version").text = contents
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_19
     withJavadocJar()
