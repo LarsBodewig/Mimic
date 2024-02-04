@@ -50,6 +50,12 @@ public class MimicAnnotationProcessor extends AbstractProcessor {
 	 */
 	protected Set<TypeElement> processed;
 
+	/**
+	 * Default constructor
+	 */
+	public MimicAnnotationProcessor() {
+	}
+
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
 		super.init(processingEnv);
