@@ -159,7 +159,7 @@ public interface ModelAdapter<T> {
 			if (!type.getSuperclass().getKind().equals(TypeKind.NONE)) {
 				DeclaredType parentType = (DeclaredType) type.getSuperclass();
 				TypeElement parentElement = (TypeElement) parentType.asElement();
-				if (!parentElement.getQualifiedName().contentEquals(Object.class.getName())) {
+				if (!parentElement.getQualifiedName().contentEquals(Object.class.getName()) && !t.equals(parentElement)) {
 					fields.addAll(getFields(parentElement));
 				}
 			}
