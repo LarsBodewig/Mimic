@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import dev.bodewig.mimic.maven.test.generated.MyTestClassMimic;
+import dev.bodewig.mimic.maven.test.generated.MySubClassMimic;
 
 class MimicTest {
 
@@ -34,6 +35,21 @@ class MimicTest {
 	void setPrivate() {
 		MyTestClass orig = new MyTestClass();
 		MyTestClassMimic mimic = new MyTestClassMimic(orig);
+		mimic.setName("private");
+		assertEquals("private", mimic.getName());
+	}
+
+	@Test
+	void getInherited() {
+		MySubClass sub = new MySubClass();
+		MySubClassMimic mimic = new MySubClassMimic(sub);
+		assertEquals(1, mimic.getCount());
+	}
+
+	@Test
+	void setInherited() {
+		MySubClass sub = new MySubClass();
+		MySubClassMimic mimic = new MySubClassMimic(sub);
 		mimic.setName("private");
 		assertEquals("private", mimic.getName());
 	}
