@@ -15,7 +15,7 @@ This repository contains a generic Annotation processor to create Mimics, and Ma
 <plugin>
 	<groupId>dev.bodewig.mimic</groupId>
 	<artifactId>mimic-maven-plugin</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.4</version>
 	<executions>
 		<execution>
 			<goals>
@@ -50,7 +50,7 @@ Each Mimic Annotation can be parameterized with a package name, the configured p
 
 ```groovy
 plugins {
-	id 'dev.bodewig.mimic' version '1.1.0'
+	id 'dev.bodewig.mimic' version '1.1.4'
 }
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
@@ -65,7 +65,6 @@ If you use the `dev.bodewig.mimic` plugin, the Gradle Java plugin is applied aut
 | Property | Description |
 | -------- | ----------- |
 | classes | List of fully qualified class names to create Mimics for. The classes must be loadable from the compile classpath. |
-| outputDirectory | Relative project path where the generated Mimics are written to. Will be added as a SourceSetDirectory to the main SourceSet. |
 | packageName | The default target package for the generated java classes, fallback if no annotation with parameter is present |
 
 All properties are required, there are no defaults.
@@ -82,7 +81,7 @@ The annotation processor can be used with multiple build tools, e.g. with Maven:
 <dependency>
 	<groupId>dev.bodewig.mimic</groupId>
 	<artifactId>mimic-annotation</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.4</version>
 </dependency>
 ...
 <plugin>
@@ -93,7 +92,7 @@ The annotation processor can be used with multiple build tools, e.g. with Maven:
 			<path>
 				<groupId>dev.bodewig.mimic</groupId>
 				<artifactId>mimic-annotation-processor</artifactId>
-				<version>1.1.0</version>
+				<version>1.1.4</version>
 			</path>
 		</annotationProcessorPaths>
 		<compilerArgs>
