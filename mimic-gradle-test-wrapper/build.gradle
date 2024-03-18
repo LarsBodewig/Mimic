@@ -16,7 +16,10 @@ java {
 
 mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
-	classes = ['dev.bodewig.mimic.gradle.test.MyTestClass']
+	classes = [
+			'dev.bodewig.mimic.gradle.test.MyTestClass',
+			'dev.bodewig.mimic.gradle.test.MySubClass'
+	]
 }
 
 tasks.named('test', Test) {

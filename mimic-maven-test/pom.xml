@@ -33,6 +33,7 @@
 						<configuration>
 							<classes>
 								<class>dev.bodewig.mimic.maven.test.MyTestClass</class>
+								<class>dev.bodewig.mimic.maven.test.MySubClass</class>
 							</classes>
 							<packageName>dev.bodewig.mimic.maven.test.generated</packageName>
 						</configuration>
