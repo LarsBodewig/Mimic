@@ -150,17 +150,16 @@ public interface ModelAdapter<T> {
 			return getFields(type).stream().map(FieldAdapter::from).collect(Collectors.toSet());
 		}
 
-		private Set<VariableElement> getFields(TypeElement t) {
+		private static Set<VariableElement> getFields(TypeElement t) {
 			Set<VariableElement> fields = new HashSet<>();
-			Set<VariableElement> ownFields = type.getEnclosedElements().stream()
+			Set<VariableElement> ownFields = t.getEnclosedElements().stream()
 					.filter(e -> e.getKind().equals(ElementKind.FIELD)).map(e -> (VariableElement) e)
 					.collect(Collectors.toSet());
 			fields.addAll(ownFields);
-			if (!type.getSuperclass().getKind().equals(TypeKind.NONE)) {
-				DeclaredType parentType = (DeclaredType) type.getSuperclass();
+			if (!t.getSuperclass().getKind().equals(TypeKind.NONE)) {
+				DeclaredType parentType = (DeclaredType) t.getSuperclass();
 				TypeElement parentElement = (TypeElement) parentType.asElement();
-				if (!parentElement.getQualifiedName().contentEquals(Object.class.getName())
-						&& !t.equals(parentElement)) {
+				if (!parentElement.getQualifiedName().contentEquals(Object.class.getName())) {
 					fields.addAll(getFields(parentElement));
 				}
 			}
