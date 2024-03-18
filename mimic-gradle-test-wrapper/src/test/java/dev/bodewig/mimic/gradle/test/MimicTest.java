@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import dev.bodewig.mimic.gradle.test.generated.MyTestClassMimic;
 import dev.bodewig.mimic.gradle.test.generated.MySubClassMimic;
+import dev.bodewig.mimic.gradle.test.hidden.MyHiddenTypePseudo;
 
 class MimicTest {
 
@@ -52,5 +53,22 @@ class MimicTest {
 		MySubClassMimic mimic = new MySubClassMimic(sub);
 		mimic.setName("private");
 		assertEquals("private", mimic.getName());
+	}
+
+	@Test
+	void getPseudo() {
+		MyWrappingType wrap = new MyWrappingType();
+		MyWrappingTypeMimic mimic = new MyWrappingTypeMimic(wrap);
+		MyHiddenTypePseudo pseudo = mimic.getHidden();
+		assertEquals("one", pseudo.getSecret());
+	}
+
+	@Test
+	void setPseudo() {
+		MyWrappingType wrap = new MyWrappingType();
+		MyWrappingTypeMimic mimic = new MyWrappingTypeMimic(wrap);
+		MyHiddenTypePseudo pseudo = mimic.getHidden();
+		pseudo.setSecret("two");
+		assertEquals("two", pseudo.getSecret());
 	}
 }

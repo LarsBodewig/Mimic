@@ -18,7 +18,8 @@ mimic {
 	packageName = 'dev.bodewig.mimic.gradle.test.generated'
 	classes = [
 			'dev.bodewig.mimic.gradle.test.MyTestClass',
-			'dev.bodewig.mimic.gradle.test.MySubClass'
+			'dev.bodewig.mimic.gradle.test.MySubClass',
+			'dev.bodewig.mimic.gradle.test.hidden.MyWrappingType'
 	]
 }
 
