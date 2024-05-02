@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 
 import javax.annotation.processing.Generated;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -43,7 +44,7 @@ public class MimicGenerator {
 	public static void createMimicFromClass(Class<?> clazz, String packageName, File outputDirectory)
 			throws IOException {
 		ModelAdapter<Class<?>> model = ModelAdapter.fromClass(clazz);
-		TypeSpec spec = createMimicType(model);
+		TypeSpec spec = createMimicType(model, packageName);
 		JavaFile javaFile = JavaFile.builder(packageName, spec).build();
 		javaFile.writeTo(outputDirectory);
 	}
@@ -61,9 +62,9 @@ public class MimicGenerator {
 	 * @throws IOException If writing the java class file to the output directory
 	 *                     fails
 	 */
-	public static void createMimicFromType(TypeElement type, String packageName, Writer outputFile) throws IOException {
-		ModelAdapter<Element> model = ModelAdapter.fromType(type);
-		TypeSpec spec = createMimicType(model);
+	public static void createMimicFromType(TypeElement type, String packageName, Writer outputFile, ProcessingEnvironment procEnv) throws IOException {
+		ModelAdapter<Element> model = ModelAdapter.fromType(type, procEnv.getElementUtils());
+		TypeSpec spec = createMimicType(model, packageName);
 		JavaFile javaFile = JavaFile.builder(packageName, spec).build();
 		javaFile.writeTo(outputFile);
 	}
@@ -105,10 +106,10 @@ public class MimicGenerator {
 	 * The type contains an instance field, a constructor with a parameter to set
 	 * the instance and getters and setters for each field from the class.
 	 *
-	 * @param clazz The class to create a Mimic for
+	 * @param model The class to create a Mimic for
 	 * @return The {@code TypeSpec} for the Mimic
 	 */
-	private static TypeSpec createMimicType(ModelAdapter<?> model) {
+	private static TypeSpec createMimicType(ModelAdapter<?> model, String packageName) {
 		String typeName = buildSimpleMimicName(model.getSimpleName());
 		TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(typeName).addModifiers(Modifier.PUBLIC)
 				.addAnnotation(AnnotationSpec.builder(Generated.class)
@@ -121,6 +122,9 @@ public class MimicGenerator {
 
 		for (FieldAdapter<?> f : model.getFields()) {
 			if (!f.isConstant()) {
+				if (!f.isTypeAccessible(packageName)) {
+					// TODO: create mimic for field type
+				}
 				MethodSpec getter = createGetter(f);
 				MethodSpec setter = createSetter(f);
 				typeBuilder.addMethod(getter);
@@ -141,14 +145,14 @@ public class MimicGenerator {
 	private static MethodSpec createGetter(FieldAdapter<?> f) {
 		String getterName = "get" + pascalCase(f.getName());
 		MethodSpec.Builder getterBuilder = MethodSpec.methodBuilder(getterName).addModifiers(Modifier.PUBLIC)
-				.returns(f.getType());
+				.returns(f.getTypeName());
 		if (f.isPublic()) {
 			getterBuilder.addStatement("return instance.$L", f.getName());
 		} else {
 			getterBuilder.beginControlFlow("try")
 					.addStatement("$T f = $T.class.getDeclaredField($S)", Field.class, f.getDeclaringClass(),
 							f.getName())
-					.addStatement("f.setAccessible(true)").addStatement("return ($T) f.get(instance)", f.getType())
+					.addStatement("f.setAccessible(true)").addStatement("return ($T) f.get(instance)", f.getTypeName())
 					.nextControlFlow("catch ($T | $T e)", NoSuchFieldException.class, IllegalAccessException.class)
 					.addStatement("throw new $T(e)", RuntimeException.class).endControlFlow();
 		}
@@ -165,7 +169,7 @@ public class MimicGenerator {
 	private static MethodSpec createSetter(FieldAdapter<?> f) {
 		String setterName = "set" + pascalCase(f.getName());
 		MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(setterName).addModifiers(Modifier.PUBLIC)
-				.addParameter(f.getType(), "value");
+				.addParameter(f.getTypeName(), "value");
 		if (f.isPublic() && !f.isFinal()) {
 			setterBuilder.addStatement("instance.$L = value", f.getName());
 		} else {

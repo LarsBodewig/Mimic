@@ -113,7 +113,7 @@ public class MimicAnnotationProcessor extends AbstractProcessor {
 				name = MimicGenerator.buildQualifiedMimicName(pkg, type.getSimpleName().toString());
 				JavaFileObject file = filer.createSourceFile(name);
 				try (Writer writer = file.openWriter()) {
-					MimicGenerator.createMimicFromType(type, pkg, writer);
+					MimicGenerator.createMimicFromType(type, pkg, writer, processingEnv);
 				}
 			}
 		} catch (IOException e) {

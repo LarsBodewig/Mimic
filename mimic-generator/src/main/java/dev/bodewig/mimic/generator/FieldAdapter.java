@@ -3,8 +3,14 @@ package dev.bodewig.mimic.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 
 import com.squareup.javapoet.TypeName;
 
@@ -28,7 +34,7 @@ public interface FieldAdapter<T> {
 	 *
 	 * @return The field's {@link TypeName}
 	 */
-	TypeName getType();
+	TypeName getTypeName();
 
 	/**
 	 * Returns if the field is public
@@ -58,6 +64,8 @@ public interface FieldAdapter<T> {
 	 */
 	T getDeclaringClass();
 
+	boolean isTypeAccessible(String pkg);
+
 	/**
 	 * Static initializer for a {@link Field} instance
 	 *
@@ -74,8 +82,8 @@ public interface FieldAdapter<T> {
 	 * @param variable The {@code VariableElement} instance
 	 * @return A {@code FieldAdapter} with the {@code variable} instance
 	 */
-	static FieldAdapter<Element> from(VariableElement variable) {
-		return new VariableFieldAdapter(variable);
+	static FieldAdapter<Element> from(VariableElement variable, Elements util) {
+		return new VariableFieldAdapter(variable, util);
 	}
 
 	/**
@@ -103,7 +111,7 @@ public interface FieldAdapter<T> {
 		}
 
 		@Override
-		public TypeName getType() {
+		public TypeName getTypeName() {
 			return TypeName.get(field.getType());
 		}
 
@@ -128,6 +136,12 @@ public interface FieldAdapter<T> {
 		}
 
 		@Override
+		public boolean isTypeAccessible(String pkg) {
+			return Modifier.isPublic(field.getType().getModifiers()) ||
+					field.getType().getPackage().getName().equals(pkg);
+		}
+
+		@Override
 		public String toString() {
 			return "FieldFieldAdapter(" + field.getName() + ")";
 		}
@@ -143,13 +157,16 @@ public interface FieldAdapter<T> {
 		 */
 		protected final VariableElement variable;
 
+		protected final Elements util;
+
 		/**
 		 * Constructor with a {@code VariableElement} instance
 		 *
 		 * @param variable The {@code VariableElement} instance
 		 */
-		public VariableFieldAdapter(VariableElement variable) {
+		public VariableFieldAdapter(VariableElement variable, Elements util) {
 			this.variable = variable;
+			this.util = util;
 		}
 
 		@Override
@@ -158,7 +175,7 @@ public interface FieldAdapter<T> {
 		}
 
 		@Override
-		public TypeName getType() {
+		public TypeName getTypeName() {
 			return TypeName.get(variable.asType());
 		}
 
@@ -181,6 +198,17 @@ public interface FieldAdapter<T> {
 		@Override
 		public Element getDeclaringClass() {
 			return variable.getEnclosingElement();
+		}
+
+		@Override
+		public boolean isTypeAccessible(String pkg) {
+			if (!variable.asType().getKind().equals(TypeKind.DECLARED)){
+				return true;
+			}
+			DeclaredType type = (DeclaredType) variable.asType();
+			TypeElement element = (TypeElement) type.asElement();
+			return element.getModifiers().contains(javax.lang.model.element.Modifier.PUBLIC) ||
+					util.getPackageOf(element).getQualifiedName().contentEquals(pkg);
 		}
 
 		@Override

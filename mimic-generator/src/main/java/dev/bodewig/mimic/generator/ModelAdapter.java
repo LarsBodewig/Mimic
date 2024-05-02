@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.util.Elements;
 
 import com.squareup.javapoet.TypeName;
 
@@ -61,8 +63,8 @@ public interface ModelAdapter<T> {
 	 * @param type The {@code TypeElement} instance
 	 * @return A {@code ModelAdapter} with the {@code type} instance
 	 */
-	static ModelAdapter<Element> fromType(TypeElement type) {
-		return new TypeModelAdapter(type);
+	static ModelAdapter<Element> fromType(TypeElement type, Elements util) {
+		return new TypeModelAdapter(type, util);
 	}
 
 	/**
@@ -126,13 +128,16 @@ public interface ModelAdapter<T> {
 		 */
 		protected final TypeElement type;
 
+		protected final Elements util;
+
 		/**
 		 * Constructor with a {@code TypeElement} instance
 		 *
 		 * @param type The {@code TypeElement} instance
 		 */
-		public TypeModelAdapter(TypeElement type) {
+		public TypeModelAdapter(TypeElement type, Elements util) {
 			this.type = type;
+			this.util = util;
 		}
 
 		@Override
@@ -147,7 +152,7 @@ public interface ModelAdapter<T> {
 
 		@Override
 		public Set<FieldAdapter<Element>> getFields() {
-			return getFields(type).stream().map(FieldAdapter::from).collect(Collectors.toSet());
+			return getFields(type).stream().map(f -> FieldAdapter.from(f, util)).collect(Collectors.toSet());
 		}
 
 		private static Set<VariableElement> getFields(TypeElement t) {
