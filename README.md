@@ -9,6 +9,13 @@ This is useful to create custom serializers/deserializers for third-party classe
 
 This repository contains a generic Annotation processor to create Mimics, and Maven and Gradle plugins for more comfort.
 
+> :information_source: **Known limitations**
+>
+> If a field uses a package-private type, the Mimic has to use the same package in order to compile successfully. If a type is protected or private, there is currently no way to use a Mimic.
+>
+> If you want to change the visibility of types, consider using the [instrumentation API](https://docs.oracle.com/en/java/javase/22/docs/api/java.instrument/java/lang/instrument/package-summary.html) or tools for bytecode manipulation at build time, such as [byte-buddy](https://bytebuddy.net) or [ASM](https://asm.ow2.io/).
+
+
 ## Maven plugin usage
 
 ```xml
@@ -171,7 +178,6 @@ System.out.println(orig.name); // not possible outside of MyTestClass!
 MyTestClassMimic mimic = new MyTestClassMimic(orig);
 System.out.println(mimic.getName()); // prints orig.name
 ```
-
 
 ---
 
